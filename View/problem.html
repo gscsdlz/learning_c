@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./css/amazeui.min.css">
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/amazeui.min.js"></script>
+    <title>第一章-第二节-函数运用</title>
+</head>
+
+<body>
+<div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
+    <h2 class="am-titlebar-title ">
+        第一章-第二节-函数运用
+    </h2>
+</div>
+<p>&nbsp;</p>
+<div class="am-g">
+    <div class="am-u-lg-6 am-u-lg-offset-3">
+        <form class="am-form">
+            <div class="am-panel am-panel-success">
+                <div class="am-panel-hd">
+                    1.C语言中测量字符串长度的函数是（）？<span class="am-icon-close" style="float:right" onclick="$(this).parent().next().toggle()"></span>
+                </div>
+                <div class="am-panel-bd">
+                    <div class="am-form-group">
+                        <label class="am-radio-inline"><input type="radio" value="1" name="select[0]"/>strcat</label><br/>
+                        <label class="am-radio-inline"><input type="radio" value="2" name="select[0]"/>strlen</label><br/>
+                        <label class="am-radio-inline"><input type="radio" value="3" name="select[0]"/>strcpy</label><br/>
+                        <label class="am-radio-inline"><input type="radio" value="4" name="select[0]"/>sizeof</label><br/>
+                    </div>
+                </div>
+            </div>
+            <div class="am-panel am-panel-success">
+                <div class="am-panel-hd">
+                    2.C语言中测量字符串长度的函数是（）？<span class="am-icon-close" style="float:right" onclick="$(this).parent().next().toggle()"></span>
+                </div>
+                <div class="am-panel-bd">
+                    <div class="am-form-group">
+                        <label class="am-radio-inline"><input type="radio" value="5" name="select[1]"/>strcat</label><br/>
+                        <label class="am-radio-inline"><input type="radio" value="6" name="select[1]"/>strlen</label><br/>
+                        <label class="am-radio-inline"><input type="radio" value="7" name="select[1]"/>strcpy</label><br/>
+                        <label class="am-radio-inline"><input type="radio" value="8" name="select[1]"/>sizeof</label><br/>
+                    </div>
+                </div>
+            </div>
+            <div class="am-text-center">
+                <button class="am-btn am-btn-danger" type="button" data-am-modal="{target:'#submit_alert'}">提交作业</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="am-modal am-modal-alert" tabindex="-1" id="submit_alert">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">提交作业提醒</div>
+        <div class="am-modal-bd">
+            确认提交吗？提交后不可修改
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn" id="submit">确认</span>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $("#submit").click(function(){
+            var answer = new Array();
+            for(var i = 0; i < $(".am-form-group").size(); i++)
+                answer.push($("input[name='select[" + i + "]']:checked").val());
+            $.post("/", {answer:answer}, function(){
+
+            })
+        })
+    })
+</script>
+</body>
+</html>

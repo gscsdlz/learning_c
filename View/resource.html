@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./css/amazeui.min.css">
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/amazeui.min.js"></script>
+    <title>教学资源编辑</title>
+</head>
+
+<body>
+<div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
+    <h2 class="am-titlebar-title ">
+        编辑学习资源
+    </h2>
+</div>
+<p>&nbsp;</p>
+<div class="am-g">
+    <div class="am-u-lg-8 am-u-lg-offset-2 am-text-center">
+        <form class="am-form am-form-inline">
+            <div class="am-form-group">
+                <input type="text" class="am-form-field" value="" placeholder="请输入标题"/>
+            </div>
+            <div class="am-form-group">
+                <select data-am-selected>
+                    <option value="-1">请选择章</option>
+                </select>
+            </div>
+            <div class="am-form-group">
+                <select data-am-selected>
+                    <option value="-1">请选择节</option>
+                </select>
+            </div>
+
+        </form>
+        <script id="editor" type="text/plain"></script>
+        <button class="am-btn am-btn-danger" type="button">提交（保存）</button>
+    </div>
+</div>
+<script src="../ext/ueditor/ueditor.config.js"></script>
+<script src="../ext/ueditor/ueditor.all.min.js"> </script>
+<script src="../ext/ueditor/editor/lang/zh-cn/zh-cn.js"></script>
+<script>
+    var ue = UE.getEditor('editor');
+    $(document).ready(function(){
+        $("#editor").css("height", "500px");
+        $("#editor").css("margin", "40px 0px");
+    })
+</script>
+</body>
+</html>
