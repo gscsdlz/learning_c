@@ -1,4 +1,5 @@
 <?php
-return $config = [
-    'test' => "123"
-];
+define('DBNAME', 'learning');
+define('DBPASS', '1234');
+define('DBHOST', 'localhost');
+define('DBUSER', 'root');
