@@ -8,39 +8,53 @@
                 <li class="am-active"><a href="#tab1">登 录</a></li>
                 <li><a href="#tab2">注 册</a></li>
             </ul>
+
             <div class="am-tabs-bd">
                 <div class="am-tab-panel am-fade am-in am-active" id="tab1">
-                    <form action="" class="am-form">
+                    <form action="" class="am-form" id="form-with-tooltip">
                         <fieldset>
                             <div class="am-form-group">
-                                <label for="doc-vld-name">学 号：</label>
-                                <input type="text" id="StuNumber" minlength="3" placeholder="请输入学号" class="am-form-field" required/>
-                                <label for="doc-vld-name">密 码：</label>
-                                <input type="password" id="Password" minlength="3" placeholder="请输入密码" class="am-form-field" required/>
+                                <label for="doc-vld-name-2-0">用户名：</label>
+                                <input type="text" id="doc-vld-name-2-0"
+                                       placeholder="请输入用户名" required/>
                             </div>
-                            <button type="button" class="am-btn am-btn-secondary" id="SignIn">确认登录</button>
+
+                            <div class="am-form-group">
+                                <label for="doc-vld-pwd-1-0">密码：</label>
+                                <input type="password" id="doc-vld-pwd-1-0" placeholder="请输入密码（至少6位）" pattern="^\d{6}$" required data-foolish-msg="把 IQ 卡密码交出来！"/>
+                            </div>
+
+                            <button class="am-btn am-btn-secondary" type="submit">确认登录</button>
                         </fieldset>
                     </form>
+
                 </div>
                 <div class="am-tab-panel am-fade" id="tab2">
-                    <form action="" class="am-form">
+                    <form action="" class="am-form" data-am-validator>
                         <fieldset>
                             <div class="am-form-group">
-                                <label for="doc-vld-name">姓 名：</label>
-                                <input type="text" id="doc-vld-name" minlength="3" placeholder="请输入姓名" class="am-form-field" required/>
-                                <label for="doc-vld-name">学 号：</label>
-                                <input type="text" id="doc-vld-name" minlength="3" placeholder="请输入学号" class="am-form-field" required/>
-                                <label for="doc-vld-name">密 码：</label>
-                                <input type="password" id="doc-vld-name" minlength="3" placeholder="请输入密码" class="am-form-field" required/>
-                                <label for="doc-vld-name">确认密码：</label>
-                                <input type="password" id="doc-vld-name" minlength="3" placeholder="请再次输入密码" class="am-form-field" required/>
+                                <label for="doc-vld-name-2">用户名：</label>
+                                <input type="text" id="doc-vld-name-2" minlength="3"
+                                       placeholder="输入用户名" required/>
                             </div>
-                            <button type="button" class="am-btn am-btn-secondary">确认注册</button>
+
+                            <div class="am-form-group">
+                                <label for="doc-vld-pwd-1">密码：</label>
+                                <input type="password" id="doc-vld-pwd-1" placeholder="请输入密码（至少6位）" pattern="^\d{6}$" required/>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label for="doc-vld-pwd-2">确认密码：</label>
+                                <input type="password" id="doc-vld-pwd-2" placeholder="请与上面输入的密码一致" data-equal-to="#doc-vld-pwd-1" required/>
+                            </div>
+
+                            <button class="am-btn am-btn-secondary" type="submit">确认注册</button>
                         </fieldset>
                     </form>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 <script>
