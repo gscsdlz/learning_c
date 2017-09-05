@@ -24,7 +24,7 @@
                                 <input type="password" id="doc-vld-pwd-1-0" placeholder="请输入密码（至少6位）" pattern="^\d{6}$" required data-foolish-msg="把 IQ 卡密码交出来！"/>
                             </div>
 
-                            <button class="am-btn am-btn-secondary" type="submit">确认登录</button>
+                            <button class="am-btn am-btn-secondary" type="button" id="SignIn">确认登录</button>
                         </fieldset>
                     </form>
 
@@ -62,12 +62,12 @@
         $("#SignIn").click(function () {
             var username = $("#StuNumber").val();
             var password = $("#Password").val();
-            $.post("learning_c/user/login", {username:username, password:password}, function(data){
+            $.post("/learning_c/user/login", {username:username, password:password}, function(data){
                 var arg = eval("(" + data + ")");
-                if(arg['status'] == true)
+                /*if(arg['status'] == true)
                     window.location.href="/";
                 else
-                    $("#loginError").show();
+                    $("#loginError").show();*/
             })
         })
     })
