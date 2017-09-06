@@ -1,8 +1,11 @@
 {#include file='header.html'#}
 {#include file='navbar.html'#}
-<body>
+<body style="background: rgb(246,246,246)">
 <div class="am-g">
-    <div class="am-u-lg-4 am-u-lg-offset-8">
+    <!--<div class="am-u-lg-8" style="background: url(/learning_c/Storage/Image/4.jpg) 0px 0px no-repeat; height:500px">
+
+    </div>-->
+    <div class="am-u-lg-4 am-u-lg-offset-4">
         <div class="am-tabs" data-am-tabs>
             <ul class="am-tabs-nav am-nav am-nav-tabs">
                 <li class="am-active"><a href="#tab1">登 录</a></li>
@@ -11,65 +14,150 @@
 
             <div class="am-tabs-bd">
                 <div class="am-tab-panel am-fade am-in am-active" id="tab1">
-                    <form action="" class="am-form" id="form-with-tooltip">
-                        <fieldset>
+                    <form class="am-form am-form-horizontal">
                             <div class="am-form-group">
-                                <label for="doc-vld-name-2-0">用户名：</label>
-                                <input type="text" id="doc-vld-name-2-0"
-                                       placeholder="请输入用户名" required/>
+                                <label for="username">用户名：</label>
+                                <input type="text" class="am-form-field" id="username" placeholder="请输入用户名" required/>
                             </div>
-
                             <div class="am-form-group">
-                                <label for="doc-vld-pwd-1-0">密码：</label>
-                                <input type="password" id="doc-vld-pwd-1-0" placeholder="请输入密码（至少6位）" pattern="^\d{6}$" required data-foolish-msg="把 IQ 卡密码交出来！"/>
+                                <label for="password">密 码：</label>
+                                <input type="password" class="am-form-field" id="password" placeholder="请输入密码"/>
                             </div>
-
-                            <button class="am-btn am-btn-secondary" type="button" id="SignIn">确认登录</button>
-                        </fieldset>
+                            <div class="am-radio-inline">
+                                <label class="am-radio-inline">
+                                    <input type="radio" name="act" value="0" checked> 学生
+                                </label>
+                                <label class="am-radio-inline">
+                                    <input type="radio" name="act" value="1"> 教师
+                                </label>
+                            </div>
+                            <div style="text-align:right;">
+                                <button class="am-btn am-btn-secondary" type="button" id="SignIn">确认登录</button>
+                            </div>
                     </form>
 
                 </div>
                 <div class="am-tab-panel am-fade" id="tab2">
-                    <form action="" class="am-form" data-am-validator>
+                    <form class="am-form am-form-horizontal">
                         <fieldset>
                             <div class="am-form-group">
-                                <label for="doc-vld-name-2">用户名：</label>
-                                <input type="text" id="doc-vld-name-2" minlength="3"
-                                       placeholder="输入用户名" required/>
+                                <label for="newUsername">用户名：</label>
+                                <input type="text" class="am-form-field" id="newUsername" placeholder="请输入用户名"/>
+                            </div>
+                            <div class="am-form-group">
+                                <label for="realname">姓 名：</label>
+                                <input type="text" class="am-form-field" id="realname" placeholder="请输入真实姓名"/>
+                            </div>
+                            <div class="am-form-group">
+                                <label for="password1">密 码：</label>
+                                <input type="password" class="am-form-field" id="password1" placeholder="请输入密码"/>
                             </div>
 
                             <div class="am-form-group">
-                                <label for="doc-vld-pwd-1">密码：</label>
-                                <input type="password" id="doc-vld-pwd-1" placeholder="请输入密码（至少6位）" pattern="^\d{6}$" required/>
+                                <label for="password2">确认密码：</label>
+                                <input type="password" class="am-form-field" id="password2" placeholder="请与上面输入的密码一致" />
                             </div>
-
-                            <div class="am-form-group">
-                                <label for="doc-vld-pwd-2">确认密码：</label>
-                                <input type="password" id="doc-vld-pwd-2" placeholder="请与上面输入的密码一致" data-equal-to="#doc-vld-pwd-1" required/>
+                            <div class="am-radio-inline">
+                                <label class="am-radio-inline">
+                                    <input type="radio" name="nAct" value="0" checked> 学生
+                                </label>
+                                <label class="am-radio-inline">
+                                    <input type="radio" name="nAct" value="1"> 教师
+                                </label>
                             </div>
-
-                            <button class="am-btn am-btn-secondary" type="submit">确认注册</button>
+                            <div style="text-align:right;">
+                                <button class="am-btn am-btn-secondary" type="button" id="SignUp">确认注册</button>
+                            </div>
                         </fieldset>
                     </form>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="am-modal am-modal-alert" tabindex="-1" id="alert">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">提示信息</div>
+        <div class="am-modal-bd" id="info">
 
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn">确定</span>
+        </div>
     </div>
 </div>
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         $("#SignIn").click(function () {
-            var username = $("#StuNumber").val();
-            var password = $("#Password").val();
-            $.post("/learning_c/user/login", {username:username, password:password}, function(data){
-                var arg = eval("(" + data + ")");
-                /*if(arg['status'] == true)
-                    window.location.href="/";
-                else
-                    $("#loginError").show();*/
-            })
+            var username = $("#username").val();
+            var password = $("#password").val();
+            var act = $("input[name='act']:checked").val();
+
+            clear_error($("#username"));
+            clear_error($("#password"));
+            if(username.length == 0) {
+                show_error($("#username"));
+            } else if(password.length == 0) {
+                show_error($("#password"));
+            } else {
+                $.post("/learning_c/user/login", {username: username, password: password, act: act}, function (data) {
+                    if (data.status == true)
+                        ; //window.location.href="/";
+                    else {
+                        $("#info").html("用户名或密码错误！请重试");
+                        $("#alert").modal();
+                    }
+                })
+            }
         })
+
+        $("#SignUp").click(function() {
+            var nUsername = $("#newUsername").val();
+            var pass1 = $("#password1").val();
+            var pass2 = $("#password2").val();
+            var realname = $("#realname").val();
+            var act = $("input[name='nAct']:checked").val();
+
+            clear_error($("#password1"));
+            clear_error($("#password2"));
+            clear_error($("#newUsername"));
+            clear_error($("#realname"));
+
+            if (nUsername.length == 0) {
+                show_error($("#newUsername"));
+            } else if (pass1.length == 0){
+                show_error($("#password1"));
+            }else if(pass2.length == 0) {
+                show_error($("#password2"));
+            } else if(pass1 != pass2) {
+                $("#info").html("两次输入的密码不一致，请重试");
+                $("#alert").modal();
+                $("#password2").val("");
+                $("#password1").val("");
+            } else if(realname.length == 0) {
+                show_error($("#realname"));
+            } else {
+                $.post("/learning_c/user/register", {username:nUsername, realname:realname, password:pass1,act:act}, function(data){
+                    var arg = eval('(' + data + ')');
+                    if(arg['status'] == true) {
+                        alert("ok");
+                    } else {
+                        $("#info").html(arg['info']);
+                        $("#alert").modal();
+                    }
+                });
+            }
+        })
+
+        function show_error(target) {
+            $(target).parent().addClass("am-form-error am-form-icon am-form-feedback");
+            $(target).parent().append('<span class="am-icon-times"></span>');
+        }
+
+        function clear_error(target) {
+            $(target).parent().removeClass("am-form-error am-form-icon am-form-feedback");
+            $(target).next().remove();
+        }
     })
 </script>
 {#include file='footer.html'#}
