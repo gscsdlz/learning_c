@@ -26,7 +26,7 @@ class UserController extends Smarty
     }
 
     public function test() {
-        parent::display("add_item.html");
+        parent::display("login.html");
     }
 
     /**
@@ -40,6 +40,34 @@ class UserController extends Smarty
      * 用户注册
      */
     public function register() {
+        $username = post("username");
+        $realname = post("realname");
+        $password = post("password");
+        $act = post("act");
+        if(AllowRegister == false) {
+            echo json_encode([
+               'status' => false,
+                'info' => '本系统已经关闭注册功能'
+            ]);
+            return;
+        }
+
+        if ($act == 0) { //代表学生
+            $res = $this->userModel->create_stu($username, $realname, $password);
+        } else if($act == 1) {  //代表教师
+            $res = $this->userModel->create_tea($username, $realname, $password);
+        }
+
+        if($res == -1) {
+            echo json_encode([
+                'status' => false,
+                'info' => '用户名重复'
+            ]);
+        } else {
+            echo json_encode([
+               'status' => true
+            ]);
+        }
 
     }
 
