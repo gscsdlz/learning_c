@@ -31,6 +31,11 @@ class ChapterModel extends DB
             return parent::query("DELETE FROM section WHERE section_id = ?",
                 [$section_id]);
         }
+    }
 
+    public function update($seciton_id, $title)
+    {
+        return parent::query("UPDATE section SET title_name = ? WHERE section_id = ? LIMIT 1",
+            [$title, $seciton_id]);
     }
 }

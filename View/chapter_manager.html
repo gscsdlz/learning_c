@@ -44,10 +44,10 @@
 </div>
 <div class="am-modal am-modal-prompt" tabindex="-1" id="prompt">
     <div class="am-modal-dialog">
-        <div class="am-modal-hd">修改信息</div>
+        <div class="am-modal-hd">请输入新的章节名</div>
         <div class="am-modal-bd">
-            请输入新的章节名
-            <input type="text" class="am-modal-prompt-input">
+
+            <input type="text" class="am-modal-prompt-input" id="promptInput">
         </div>
         <div class="am-modal-footer">
             <span class="am-modal-btn" data-am-modal-cancel>取消</span>
@@ -75,7 +75,20 @@
         })
 
         $(".am-btn-success").click(function(){
-            $("#prompt").modal()
+            var title = $(this).parent().prev().html();
+            var section_id = $(this).next().next().val();
+            $("#promptInput").attr('placeholder', title);
+            $("#prompt").modal({
+                onConfirm:function(e) {
+                    $("#promptInput").val("");
+                    $.post("/learning_c/chapter/modify",{section_id:section_id,title:e.data}, function(data){
+
+                    });
+                },
+                onCancel:function(e) {
+                  $("#promptInput").val("");
+                }
+            })
         })
 
         $("#add").click(function(){
