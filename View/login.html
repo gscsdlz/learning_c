@@ -20,11 +20,25 @@
                             </div>
 
                             <div class="am-form-group">
-                                <label for="doc-vld-pwd-1-0">密码：</label>
+                                <label for="doc-vld-pwd-1-0">密 码：</label>
                                 <input type="password" id="doc-vld-pwd-1-0" placeholder="请输入密码（至少6位）" pattern="^\d{6}$" required data-foolish-msg="请输入密码！"/>
                             </div>
+                            <div class="am-radio">
+                                <label>
+                                    <input type="radio" name="doc-radio-1" value="option1" checked>
+                                    学生
+                                </label>
+                            </div>
 
-                            <button class="am-btn am-btn-secondary" type="button" id="SignIn">确认登录</button>
+                            <div class="am-radio">
+                                <label>
+                                    <input type="radio" name="doc-radio-1" value="option2">
+                                    教师
+                                </label>
+                            </div>
+                            <div style = "text-align:right;">
+                            <button class="am-btn am-btn-secondary" type="button" id="SignIn" >确认登录</button>
+                            </div>
                         </fieldset>
                     </form>
 
@@ -35,11 +49,15 @@
                             <div class="am-form-group">
                                 <label for="doc-vld-name-2">用户名：</label>
                                 <input type="text" id="doc-vld-name-2" minlength="3"
-                                       placeholder="输入用户名" required/>
+                                       placeholder="请输入用户名" required/>
                             </div>
-
                             <div class="am-form-group">
-                                <label for="doc-vld-pwd-1">密码：</label>
+                                <label for="doc-vld-name-2">姓 名：</label>
+                                <input type="text" id="doc-vld-name-2" minlength="3"
+                                       placeholder="请输入真实姓名" required/>
+                            </div>
+                            <div class="am-form-group">
+                                <label for="doc-vld-pwd-1">密 码：</label>
                                 <input type="password" id="doc-vld-pwd-1" placeholder="请输入密码（至少6位）" pattern="^\d{6}$" required/>
                             </div>
 
@@ -47,8 +65,22 @@
                                 <label for="doc-vld-pwd-2">确认密码：</label>
                                 <input type="password" id="doc-vld-pwd-2" placeholder="请与上面输入的密码一致" data-equal-to="#doc-vld-pwd-1" required/>
                             </div>
+                            <div class="am-radio">
+                                <label>
+                                    <input type="radio" name="doc-radio-1" value="option1" checked>
+                                    学生注册
+                                </label>
+                            </div>
 
+                            <div class="am-radio">
+                                <label>
+                                    <input type="radio" name="doc-radio-1" value="option2">
+                                    教师注册
+                                </label>
+                            </div>
+                            <div style = "text-align:right;">
                             <button class="am-btn am-btn-secondary" type="submit">确认注册</button>
+                            </div>
                         </fieldset>
                     </form>
                 </div>
