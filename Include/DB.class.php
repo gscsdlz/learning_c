@@ -1,8 +1,4 @@
 <?php
-define('DBNAME', 'cwe');
-define('DBHOST', 'localhost');
-define('DBUSER', 'cwe');
-define('DBPASS', 'Lal19950826~');
 class DB {
     private static $pdo = null;
     public function __construct() {
