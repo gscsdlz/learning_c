@@ -11,7 +11,16 @@ class ProblemController extends Smarty
      * 新增一个题目
      */
     public function add_problem() {
+        $pro=post("pro");
+        $answer=post("answer");
+        $options=post("options");
+        if (is_null($pro) || is_null($answer) || is_null($options))
+            echo json_encode([
+                'status' => false
+            ]);
+        else {
 
+        }
     }
 
     /**
