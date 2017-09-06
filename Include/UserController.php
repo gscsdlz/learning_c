@@ -26,6 +26,27 @@ class UserController extends Smarty
     }
 
     public function test() {
-        parent::display("login.html");
+        parent::display("add_item.html");
+    }
+
+    /**
+     * 控制用户注销
+     */
+    public function logout() {
+
+    }
+
+    /**
+     * 用户注册
+     */
+    public function register() {
+
+    }
+
+    /**
+     *
+     */
+    public function update_info() {
+
     }
 }
