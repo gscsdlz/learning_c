@@ -5,3 +5,5 @@ define('DBHOST', 'localhost');
 define('DBUSER', 'root');
 
 define("AllowRegister", true);
+
+define("SectionPageMax", 20);

@@ -1,0 +1,99 @@
+{#include file='header.html'#}
+{#include file='navbar.html'#}
+<div class="am-g">
+    <div class="am-u-lg-6 am-u-lg-offset-3">
+        <button class="am-btn am-btn-warning" type="button" id="add">新增章节</button>
+        <p>&nbsp;</p>
+
+                <table class="am-table">
+                    <tr>
+                        <th>章号</th>
+                        <th>节号</th>
+                        <th>章节名</th>
+                        <th>操作</th>
+                    </tr>
+                    {#foreach $lists as $row#}
+                    <tr>
+                        <td>{#$row[1]#}</td>
+                        <td>{#$row[2]#}</td>
+                        <td>{#$row[3]#}</td>
+                        <td>
+                            <button class="am-btn am-btn-success" type="button">修改</button>
+                            <button class="am-btn am-btn-danger" type="button">删除</button>
+                            <input type="hidden" value="{#$row[0]#}" />
+                        </td>
+                    </tr>
+                    {#/foreach#}
+                </table>
+
+                <button class="am-btn am-btn-primary" style="float: left" ;type="button">上一页</button>
+                <button class="am-btn am-btn-primary" style="float: right" type="button">下一页</button>
+    </div>
+</div>
+<div class="am-modal am-modal-confirm" tabindex="-1" id="confirm">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">提示信息</div>
+        <div class="am-modal-bd" id="info">
+
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+            <span class="am-modal-btn" data-am-modal-confirm>确定</span>
+        </div>
+    </div>
+</div>
+<div class="am-modal am-modal-prompt" tabindex="-1" id="prompt">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">请输入新的章节名</div>
+        <div class="am-modal-bd">
+
+            <input type="text" class="am-modal-prompt-input" id="promptInput">
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+            <span class="am-modal-btn" data-am-modal-confirm>确定</span>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".am-btn-danger").click(function(){
+            $("#info").html("确认删除吗？删除后不可恢复");
+            var section_id = $(this).next().val();
+            $("#confirm").modal({
+                onConfirm:function(e) {
+                    $.post("/learning_c/chapter/del", {section_id:section_id}, function(data){
+                        var arg = eval("(" + data + ")");
+                        if(arg['status'] == true) {
+
+                        } else {
+
+                        }
+                    })
+                }
+            });
+        })
+
+        $(".am-btn-success").click(function(){
+            var title = $(this).parent().prev().html();
+            var section_id = $(this).next().next().val();
+            $("#promptInput").attr('placeholder', title);
+            $("#prompt").modal({
+                onConfirm:function(e) {
+                    $("#promptInput").val("");
+                    $.post("/learning_c/chapter/modify",{section_id:section_id,title:e.data}, function(data){
+
+                    });
+                },
+                onCancel:function(e) {
+                  $("#promptInput").val("");
+                }
+            })
+        })
+
+        $("#add").click(function(){
+
+        })
+    })
+</script>
+{#include file='footer.html'#}
