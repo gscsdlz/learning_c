@@ -16,7 +16,7 @@
                 <div class="am-tab-panel am-fade am-in am-active" id="tab1">
                     <form class="am-form am-form-horizontal">
                             <div class="am-form-group">
-                                <label for="username">用户名：</label>
+                                <label for="username">学号</label>
                                 <input type="text" class="am-form-field" id="username" placeholder="请输入用户名" required/>
                             </div>
                             <div class="am-form-group">
@@ -25,10 +25,10 @@
                             </div>
                             <div class="am-radio-inline">
                                 <label class="am-radio-inline">
-                                    <input type="radio" name="act" value="0" checked> 学生
+                                    <input type="radio" name="act" value="0" checked onclick="$('#username').prev().html('学号')"> 学生
                                 </label>
                                 <label class="am-radio-inline">
-                                    <input type="radio" name="act" value="1"> 教师
+                                    <input type="radio" name="act" value="1" onclick="$('#username').prev().html('教工号')"> 教师
                                 </label>
                             </div>
                             <div style="text-align:right;">
@@ -41,7 +41,7 @@
                     <form class="am-form am-form-horizontal">
                         <fieldset>
                             <div class="am-form-group">
-                                <label for="newUsername">用户名：</label>
+                                <label for="newUsername">学号：</label>
                                 <input type="text" class="am-form-field" id="newUsername" placeholder="请输入用户名"/>
                             </div>
                             <div class="am-form-group">
@@ -59,10 +59,10 @@
                             </div>
                             <div class="am-radio-inline">
                                 <label class="am-radio-inline">
-                                    <input type="radio" name="nAct" value="0" checked> 学生
+                                    <input type="radio" name="nAct" value="0" checked onclick="$('#newUsername').prev().html('学号')"> 学生
                                 </label>
                                 <label class="am-radio-inline">
-                                    <input type="radio" name="nAct" value="1"> 教师
+                                    <input type="radio" name="nAct" value="1" onclick="$('#newUsername').prev().html('教工号')"> 教师
                                 </label>
                             </div>
                             <div style="text-align:right;">
@@ -101,8 +101,9 @@
                 show_error($("#password"));
             } else {
                 $.post("/learning_c/user/login", {username: username, password: password, act: act}, function (data) {
-                    if (data.status == true)
-                        ; //window.location.href="/";
+                    var arg = eval("(" + data + ")");
+                    if (arg['status'] == true)
+                         window.location.reload();
                     else {
                         $("#info").html("用户名或密码错误！请重试");
                         $("#alert").modal();

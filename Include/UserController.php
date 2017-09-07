@@ -11,10 +11,21 @@ class UserController extends Smarty
     }
 
     public function login() {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        $res = $this->userModel->check_user($username, $password);
-        if ($res == true) {
+        $username = post('username');
+        $password = post('password');
+        $act = post('act');
+
+        $res = $this->userModel->check_user($username, $password, $act);
+
+        if ($res != false) {
+            $_SESSION['username'] = $username;
+            if($act == 0)
+                $_SESSION['stu_id'] = $res[1];
+            else {
+                $_SESSION['tea_id'] = $res[1];
+                $_SESSION['privilege'] = $res[2];
+            }
+            $_SESSION['timeout'] = time() + TimeOut;
             echo json_encode([
                'status' => true
             ]);
@@ -26,7 +37,7 @@ class UserController extends Smarty
     }
 
     public function test() {
-        parent::display("login.html");
+        parent::display("CaptureManager.html");
     }
 
     /**

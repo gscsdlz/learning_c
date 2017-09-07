@@ -7,7 +7,18 @@ function auto_loader($className) {
 }
 
 function session_check() {
-
+    session_start();
+    if (isset ( $_SESSION ['timeout'] )) { // 检查登录情况
+        if ($_SESSION ['timeout'] < time ()) { // 登录超时
+            $_SESSION = array ();
+            session_destroy ();
+            setcookie ( 'PHPSESSID', '', time () - 3600, '/', '', 0, 0 );
+            return false;
+        }
+        $_SESSION ['timeout'] = time () + TimeOut; // 刷新时间戳 @config.php
+        return true;
+    }
+    return false;
 }
 
 function post($key, $default = null) {
