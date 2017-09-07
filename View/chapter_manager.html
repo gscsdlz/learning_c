@@ -7,9 +7,9 @@
 
                 <table class="am-table">
                     <tr>
-                        <th>章号</th>
-                        <th>节号</th>
                         <th>章节名</th>
+                        <th>现有资源数</th>
+                        <th>现有试题数</th>
                         <th>操作</th>
                     </tr>
                     {#foreach $lists as $row#}
@@ -26,8 +26,8 @@
                     {#/foreach#}
                 </table>
 
-                <button class="am-btn am-btn-primary" style="float: left" ;type="button">上一页</button>
-                <button class="am-btn am-btn-primary" style="float: right" type="button">下一页</button>
+                <button class="am-btn am-btn-primary" style="float: left" ;type="button" onclick="window.location.href='/learning_c/chapter/show/{#$page - 1#}'">上一页</button>
+                <button class="am-btn am-btn-primary" style="float: right" type="button" onclick="window.location.href='/learning_c/chapter/show/{#$page + 1#}'">下一页</button>
     </div>
 </div>
 <div class="am-modal am-modal-confirm" tabindex="-1" id="confirm">
@@ -46,7 +46,6 @@
     <div class="am-modal-dialog">
         <div class="am-modal-hd">请输入新的章节名</div>
         <div class="am-modal-bd">
-
             <input type="text" class="am-modal-prompt-input" id="promptInput">
         </div>
         <div class="am-modal-footer">
@@ -65,7 +64,7 @@
                     $.post("/learning_c/chapter/del", {section_id:section_id}, function(data){
                         var arg = eval("(" + data + ")");
                         if(arg['status'] == true) {
-
+                            window.location.reload();
                         } else {
 
                         }
@@ -75,7 +74,7 @@
         })
 
         $(".am-btn-success").click(function(){
-            var title = $(this).parent().prev().html();
+            var title = $(this).parent().prev().prev().prev().html();
             var section_id = $(this).next().next().val();
             $("#promptInput").attr('placeholder', title);
             $("#prompt").modal({
@@ -92,7 +91,23 @@
         })
 
         $("#add").click(function(){
-
+            $("#prompt").modal({
+                onConfirm:function(e){
+                    var name = $("#promptInput").val();
+                    $.post("/learning_c/chapter/add", {name:name}, function(data){
+                        var arg = eval("(" + data + ")");
+                        if(arg['status'] == true) {
+                            window.location.reload();
+                        } else {
+                            $("#info").html("提交失败，请重试");
+                            $("#alert").modal();
+                        }
+                    })
+                },
+                onCancel:function(e) {
+                    $("#promptInput").val("");
+                }
+            })
         })
     })
 </script>

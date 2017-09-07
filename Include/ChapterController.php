@@ -19,10 +19,12 @@ class ChapterController extends Smarty
 
     public function show()
     {
-        $page = get("p");
+        $page = get("id");
         if ($page <= 0)
             $page = 1;
         $res = $this->chapterModel->list_all($page);
+        parent::assign('page', $page);
+        parent::assign('navbar', 'Chapter');
         parent::assign('lists', $res);
         parent::display('chapter_manager.html');
     }
@@ -55,6 +57,23 @@ class ChapterController extends Smarty
             echo json_encode([
                 'status' => false
             ]);
+        }
+    }
+
+    public function add()
+    {
+        $name = post('name');
+        if(!is_null($name) && strlen($name) > 0) {
+            $row = $this->chapterModel->add($name);
+            if($row > 0) {
+                echo json_encode([
+                    'status' => true
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => false
+                ]);
+            }
         }
     }
 }

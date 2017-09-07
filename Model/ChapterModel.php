@@ -18,7 +18,10 @@ class ChapterModel extends DB
         $l = ($page - 1) * SectionPageMax;
         $r = $l + SectionPageMax;
 
-        return parent::query_fetch_all("SELECT section_id, chapter_name,section_name , title_name FROM section LIMIT $l, $r");
+        return parent::query_fetch_all("SELECT section.*, COUNT(resource_id), COUNT(pro_id) 
+          FROM `section` LEFT JOIN learning_resource ON section.section_id = learning_resource.section_id 
+          LEFT JOIN problem ON problem.section_id = section.section_id 
+          GROUP BY section.section_id  LIMIT $l, $r");
     }
 
     public function remove($section_id)
@@ -33,9 +36,14 @@ class ChapterModel extends DB
         }
     }
 
-    public function update($seciton_id, $title)
+    public function update($seciton_id, $name)
     {
-        return parent::query("UPDATE section SET title_name = ? WHERE section_id = ? LIMIT 1",
-            [$title, $seciton_id]);
+        return parent::query("UPDATE section SET section_name = ? WHERE section_id = ? LIMIT 1",
+            [$name, $seciton_id]);
+    }
+
+    public function add($name) {
+        return parent::query("INSERT INTO section (section_name) VALUES (?)",
+            [$name]);
     }
 }
