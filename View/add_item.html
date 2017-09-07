@@ -1,7 +1,5 @@
 {#include file='header.html'#}
 {#include file='navbar.html'#}
-
-<body>
 <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" style="margin-bottom:20px">
     <h2 class="am-titlebar-title ">
         新增题目
@@ -160,7 +158,7 @@
                 }
 
                 if(errorSig == false) {
-                    $.post("/learning_c/problem/add_problem", {pro:pro, answer:answer, options:options, sectionID:sid}, function(data){
+                    $.post("/learning_c/problem/add_problem", {pro:pro, answer:answer, options:options, sectionID:s}, function(data){
                         if(data.status == true) {
                             $("#info").html("提交成功");
                             $("#alert").modal();
