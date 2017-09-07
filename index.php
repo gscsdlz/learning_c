@@ -10,6 +10,7 @@ require APPPATH . '/Include/router.class.php';
 require APPPATH . '/Include/WORK.class.php';
 
 spl_autoload_register('auto_loader');
+session_check();
 
 $route = new router();
 $controllerClass = $route->control;
