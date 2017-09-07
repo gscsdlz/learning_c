@@ -1,10 +1,8 @@
 <?php
 
 /**
- * Created by PhpStorm.
- * User: john
- * Date: 2017/9/6
- * Time: 15:45
+ * Class ChapterController
+ * 完全管理员控制
  */
 class ChapterController extends Smarty
 {
@@ -14,9 +12,16 @@ class ChapterController extends Smarty
     public function __construct()
     {
         parent::__construct();
+        if( !isset($_SESSION['privilege']) || $_SESSION['privilege'] == 0) {
+            parent::display('privilege_error.html');
+            die;
+        }
         $this->chapterModel = new ChapterModel();
     }
 
+    /**
+     * 展示现有章节 支持分页
+     */
     public function show()
     {
         $page = get("id");
@@ -29,6 +34,9 @@ class ChapterController extends Smarty
         parent::display('chapter_manager.html');
     }
 
+    /**
+     * 删除现有章节
+     */
     public function del()
     {
         $section_id = post("section_id");
@@ -44,6 +52,9 @@ class ChapterController extends Smarty
         }
     }
 
+    /**
+     * 修改现有章节
+     */
     public function modify()
     {
         $section_id = post('section_id');
@@ -60,6 +71,9 @@ class ChapterController extends Smarty
         }
     }
 
+    /**
+     * 新增章节
+     */
     public function add()
     {
         $name = post('name');
