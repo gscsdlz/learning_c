@@ -13,15 +13,10 @@
             <fieldset class="am-form-set">
                 <div class="am-u-sm-12">
                     <select id="sectionID" data-am-selected>
-                        <option value="-1">请选择章号</option>
-                        <option value="1">第一章</option>
-                        <option value="2">第二章</option>
-                    </select>
-                    <span class="am-form-caret"></span>
-                    <select id="captureID" data-am-selected>
-                        <option value="-1">请选择节号</option>
-                        <option value="1">第一节</option>
-                        <option value="2">第二节</option>
+                        <option value="-1">请选择章节</option>
+                        {#foreach $sectionLists as $row#}
+                            <option value="{#$row[0]#}">{#$row[1]#}</option>
+                        {#/foreach#}
                     </select>
                     <span class="am-form-caret"></span>
                 </div>
@@ -80,17 +75,17 @@
                 <div class="am-form-group">
                     <label class="am-u-sm-2 am-form-label">答案</label>
                     <div class="am-u-sm-10" id="answers">
-                            <label class="am-radio-inline">
-                                <input type="radio" value="0" name="option"> A
+                            <label class="am-checkbox-inline">
+                                <input type="checkbox" value="0" name="option"> A
                             </label>
-                            <label class="am-radio-inline ">
-                                <input type="radio" value="1" name="option"> B
+                            <label class="am-checkbox-inline ">
+                                <input type="checkbox" value="1" name="option"> B
                             </label>
-                            <label class="am-radio-inline ">
-                                <input type="radio" value="2" name="option"> C
+                            <label class="am-checkbox-inline ">
+                                <input type="checkbox" value="2" name="option"> C
                             </label>
-                            <label class="am-radio-inline ">
-                                <input type="radio" value="3" name="option"> D
+                            <label class="am-checkbox-inline ">
+                                <input type="checkbox" value="3" name="option"> D
                             </label>
                     </div>
                 </div>
@@ -124,7 +119,7 @@
             var answerString = "";
             for (var i = 0; i < size; i++) {
                 baseString += '<div class="am-form-group"><label class="am-u-sm-2 am-form-label">'+String.fromCharCode(65 + i)+'</label><div class="am-u-sm-10"><input type="text" class="am-form-field" placeholder="请输入选项'+String.fromCharCode(65 + i)+'"></div></div>';
-                answerString += '<label class="am-radio-inline"><input type="radio" value="'+i+'" name="option">'+String.fromCharCode(65 + i)+'</label>';
+                answerString += '<label class="am-checkbox-inline"><input type="checkbox" value="'+i+'" name="option">'+String.fromCharCode(65 + i)+'</label>';
             }
             $("#options").html(baseString);
             $("#answers").html(answerString);
@@ -133,11 +128,18 @@
         $("#submit").click(function(){
             var pro = $("#problem").val();
             var options = new Array();
+            var sid = $("#sectionID").val();
             $("#options").children().each(function(index, target){
                 options.push($(target).children().eq(1).children().eq(0).val());
             })
-            var answer = $("input[name=option]:checked").val();
-            if(pro.length == 0) {
+            var answer = new Array();
+            $("input[name=option]:checked").each(function(index, target){
+                answer.push($(target).val());
+            });
+            if(sid == -1) {
+                $("#info").html("请选择章节");
+                $("#alert").modal();
+            } else if(pro.length == 0) {
                 $("#problem").attr("placeholder", "请在这里输入题干");
                 $("#info").html("题干不能为空");
                 $("#alert").modal();
@@ -158,7 +160,7 @@
                 }
 
                 if(errorSig == false) {
-                    $.post("/learning_c/problem/add", {pro:pro, answer:answer, options:options}, function(data){
+                    $.post("/learning_c/problem/add_problem", {pro:pro, answer:answer, options:options, sectionID:sid}, function(data){
                         if(data.status == true) {
                             $("#info").html("提交成功");
                             $("#alert").modal();
