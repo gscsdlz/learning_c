@@ -5,6 +5,8 @@ class WORK {
 			return new UserController ();
 		else if ($className == 'ChapterController') {
 		    return new ChapterController();
+        } else if ($className == 'ProblemController') {
+            return new ProblemController();
         } else {
 			require_once 'indexControl.php';
 			return new indexControl ();
