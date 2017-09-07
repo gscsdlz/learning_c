@@ -20,27 +20,47 @@ class ChapterController extends Smarty
     }
 
     /**
-     * 展示现有章节 支持分页
+     * 展示现有章节
      */
     public function show()
     {
-        $page = get("id");
-        if ($page <= 0)
-            $page = 1;
-        $res = $this->chapterModel->list_all($page);
-        parent::assign('page', $page);
+        $sectionID = get("id", 0);
+        $section = $this->chapterModel->get_all_section($sectionID);
+
+        if (!is_null($section) && count($section) > 0) {
+            $res = $this->chapterModel->get_chapter($sectionID);
+
+            parent::assign('section', $section[0]);
+            parent::assign('lists', $res);
+        }
+        $lists = $this->chapterModel->get_all_section();
+        parent::assign('sectionLists', $lists);
         parent::assign('navbar', 'Chapter');
-        parent::assign('lists', $res);
         parent::display('chapter_manager.html');
     }
 
     /**
      * 删除现有章节
      */
+    public function del_chapter()
+    {
+        $id = post("id");
+        $res = $this->chapterModel->remove_chapter($id);
+        if ($res != 0) {
+            echo json_encode([
+                'status' => true
+            ]);
+        } else {
+            echo json_encode([
+                'status' => false
+            ]);
+        }
+    }
+
     public function del()
     {
-        $section_id = post("section_id");
-        $res = $this->chapterModel->remove($section_id);
+        $id = post("id");
+        $res = $this->chapterModel->remove($id);
         if ($res != 0) {
             echo json_encode([
                 'status' => true
@@ -55,33 +75,74 @@ class ChapterController extends Smarty
     /**
      * 修改现有章节
      */
+    public function modify_chapter()
+    {
+        $id = post('id');
+        $title = post('title');
+        if(!is_null($title) && strlen($title) > 0) {
+            $row = $this->chapterModel->update_chapter($id, $title);
+            if ($row > 0) {
+                echo json_encode([
+                    'status' => true
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => false
+                ]);
+            }
+        }
+    }
+
     public function modify()
     {
-        $section_id = post('section_id');
-        $title = post('title');
-        $row = $this->chapterModel->update($section_id, $title);
-        if ($row > 0) {
-            echo json_encode([
-                'status' => true
-            ]);
-        } else {
-            echo json_encode([
-                'status' => false
-            ]);
+        $id = post('id');
+        $title = post('name');
+        if(!is_null($title) && strlen($title) > 0) {
+            $row = $this->chapterModel->update($id, $title);
+            if ($row > 0) {
+                echo json_encode([
+                    'status' => true
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => false
+                ]);
+            }
         }
     }
 
     /**
      * 新增章节
      */
-    public function add()
+    public function add_chapter()
     {
         $name = post('name');
+        $sectionID = post("sectionID");
+
         if(!is_null($name) && strlen($name) > 0) {
-            $row = $this->chapterModel->add($name);
+            $row = $this->chapterModel->add_chapter($name, $sectionID);
             if($row > 0) {
                 echo json_encode([
                     'status' => true
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => false
+                ]);
+            }
+        }
+    }
+
+    public function add()
+    {
+        $name = post('name');
+
+        if(!is_null($name) && strlen($name) > 0) {
+            $row = $this->chapterModel->add_section($name);
+            if($row > 0) {
+                echo json_encode([
+                    'status' => true,
+                    'section_id' => $row
                 ]);
             } else {
                 echo json_encode([

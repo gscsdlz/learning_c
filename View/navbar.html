@@ -11,7 +11,7 @@
             <li><a href="#">练习</a></li>
             <li><a href="#">资源学习</a></li>
             {#if isset($smarty.session.privilege) && $smarty.session.privilege == 1#}
-            <li{#if isset($navbar) && $navbar == 'Chapter'#} class='am-active'{#/if#}><a href="#">章节管理</a></li>
+            <li{#if isset($navbar) && $navbar == 'Chapter'#} class='am-active'{#/if#}><a href="/learning_c/chapter/show">章节管理</a></li>
             <li class="am-dropdown" data-am-dropdown>
                 <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">题目管理<span class="am-icon-caret-down"></span></a>
                 <ul class="am-dropdown-content">

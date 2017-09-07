@@ -7,13 +7,25 @@
 </div>
 <div class="am-g">
     <div class="am-u-lg-6 am-u-lg-offset-3">
-        <button class="am-btn am-btn-warning" type="button" id="add">新增章节</button>
-        <div class="am-panel am-panel-success">
+        <button class="am-btn am-btn-warning" type="button" data-am-offcanvas="{target: '#sectionList', effect: 'push'}">切换章节</button>
+        <button class="am-btn am-btn-warning" type="button" id="addSection">新增章节</button>
+        <p>&nbsp;</p>
+        {#if isset($section) && !is_null($section)#}
+        <div class="am-panel am-panel-default">
             <div class="am-panel-hd">
-
+                <h1>
+                    {#$section[1]#}
+                    <span style="float: right">
+                        <span class="am-icon-edit" style="cursor:pointer"  id="modify"></span>
+                        <span class="am-icon-plus" style="cursor:pointer"  id="add"></span>
+                        <span class="am-icon-remove" style="cursor:pointer"  id="remove"></span>
+                        <span class="am-icon-sort" style="cursor:pointer"  id="sort"></span>
+                    </span>
+                </h1>
+                <input type="hidden" value="{#$section[0]#}" id="sectionID"/>
             </div>
             <div class="am-panel-bd">
-                <table class="table">
+                <table class="am-table">
                     <tr>
                         <th>章节编号</th>
                         <th>章节名</th>
@@ -26,20 +38,19 @@
                         <td>{#$row[1]#}</td>
                         <td>{#$row[2]#}</td>
                         <td>{#$row[3]#}</td>
+                        <td>{#$row[4]#}</td>
                         <td>
-                            <button class="am-btn am-btn-success" type="button">修改</button>
-                            <button class="am-btn am-btn-danger" type="button">删除</button>
+                            <span class="am-icon-edit am-edit" style="cursor: pointer" data-am-popover="{content: '修改章节名', trigger: 'hover focus'}"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span class="am-icon-remove am-remove" style="cursor: pointer" data-am-popover="{content: '删除本章', trigger: 'hover focus'}"></span>&nbsp;&nbsp;&nbsp;&nbsp;
                             <input type="hidden" value="{#$row[0]#}" />
                         </td>
                     </tr>
                     {#/foreach#}
                 </table>
             </div>
-            <div class="am-panel-footer">
-                <button class="am-btn am-btn-primary" style="float: left" ;type="button" onclick="window.location.href='/learning_c/chapter/show/{#$page - 1#}'">上一页</button>
-                <button class="am-btn am-btn-primary" style="float: right" type="button" onclick="window.location.href='/learning_c/chapter/show/{#$page + 1#}'">下一页</button>
-            </div>
         </div>
+        {#/if#}
+    </div>
 </div>
 <div class="am-modal am-modal-confirm" tabindex="-1" id="confirm">
     <div class="am-modal-dialog">
@@ -53,6 +64,7 @@
         </div>
     </div>
 </div>
+
 <div class="am-modal am-modal-prompt" tabindex="-1" id="prompt">
     <div class="am-modal-dialog">
         <div class="am-modal-hd">请输入新的章节名</div>
@@ -65,34 +77,52 @@
         </div>
     </div>
 </div>
+<div id="sectionList" class="am-offcanvas">
+    <div class="am-offcanvas-bar">
+        <div class="am-offcanvas-content">
+            <ul>
+            {#foreach $sectionLists as $row#}
+                <li><a href="/learning_c/chapter/show/{#$row[0]#}">{#$row[1]#}</a></li>
+            {#/foreach#}
+            </ul>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
-        $(".am-btn-danger").click(function(){
+        $(".am-remove").click(function(){
             $("#info").html("确认删除吗？删除后不可恢复");
-            var section_id = $(this).next().val();
+            var id = $(this).next().val();
             $("#confirm").modal({
                 onConfirm:function(e) {
-                    $.post("/learning_c/chapter/del", {section_id:section_id}, function(data){
+                    $.post("/learning_c/chapter/del_chapter", {id:id}, function(data){
                         var arg = eval("(" + data + ")");
                         if(arg['status'] == true) {
                             window.location.reload();
                         } else {
-
+                            $("#info").html("提交失败，请重试");
+                            $("#alert").modal();
                         }
                     })
                 }
             });
         })
 
-        $(".am-btn-success").click(function(){
+        $(".am-edit").click(function(){
             var title = $(this).parent().prev().prev().prev().html();
-            var section_id = $(this).next().next().val();
+            var id = $(this).next().next().val();
             $("#promptInput").attr('placeholder', title);
             $("#prompt").modal({
                 onConfirm:function(e) {
                     $("#promptInput").val("");
-                    $.post("/learning_c/chapter/modify",{section_id:section_id,title:e.data}, function(data){
-
+                    $.post("/learning_c/chapter/modify_chapter",{id:id,title:e.data}, function(data){
+                        var arg = eval("(" + data + ")");
+                        if(arg['status'] == true) {
+                            window.location.reload();
+                        } else {
+                            $("#info").html("提交失败，请重试");
+                            $("#alert").modal();
+                        }
                     });
                 },
                 onCancel:function(e) {
@@ -105,7 +135,8 @@
             $("#prompt").modal({
                 onConfirm:function(e){
                     var name = $("#promptInput").val();
-                    $.post("/learning_c/chapter/add", {name:name}, function(data){
+                    var sid = $("#sectionID").val();
+                    $.post("/learning_c/chapter/add_chapter", {name:name, sectionID:sid}, function(data){
                         var arg = eval("(" + data + ")");
                         if(arg['status'] == true) {
                             window.location.reload();
@@ -116,6 +147,69 @@
                     })
                 },
                 onCancel:function(e) {
+                    $("#promptInput").val("");
+                }
+            })
+        })
+
+        $("#remove").click(function(){
+            $("#info").html("确认删除吗？删除后不可恢复");
+            $("#confirm").modal({
+                onConfirm:function(e){
+                    var sid = $("#sectionID").val();
+                    $.post("/learning_c/chapter/del", {id:sid}, function(data){
+                        var arg = eval("(" + data + ")");
+                        if(arg['status'] == true) {
+                            window.location.href= '/learning_c/chapter/show';
+                        } else {
+                            $("#info").html("提交失败，请重试");
+                            $("#alert").modal();
+                        }
+                    })
+                },
+                onCancel:function(e) {
+                    $("#promptInput").val("");
+                }
+            })
+        })
+
+        $("#addSection").click(function(){
+            $("#prompt").modal({
+                onConfirm:function(e){
+                  var name = $("#promptInput").val();
+                  $.post("/learning_c/chapter/add", {name:name}, function(data){
+                      var arg = eval("(" + data + ")");
+                      if(arg['status'] == true)
+                          window.location.href = "/learning_c/chapter/show/" + arg['section_id'];
+                      else {
+                          $("#info").html("提交失败，请重试");
+                          $("#alert").modal();
+                      }
+                  })
+                },
+                onCancel:function(e){
+                    $("#promptInput").val("");
+                }
+            })
+        })
+
+        $("#modify").click(function(){
+
+           $("#prompt").modal({
+                onConfirm:function(e){
+                    var name = $("#promptInput").val();
+                    var sid = $("#sectionID").val();
+                    $.post("/learning_c/chapter/modify", {name:name, id:sid}, function(data){
+                        var arg = eval("(" + data + ")");
+                        if(arg['status'] == true)
+                            window.location.reload();
+                        else {
+                            $("#info").html("提交失败，请重试");
+                            $("#alert").modal();
+                        }
+                    })
+                },
+                onCancel:function(e){
                     $("#promptInput").val("");
                 }
             })

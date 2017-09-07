@@ -8,8 +8,7 @@ class WORK {
         } else if ($className == 'ProblemController') {
             return new ProblemController();
         } else {
-			require_once 'indexControl.php';
-			return new indexControl ();
+			return new IndexController();
 		}
 	}
 }
