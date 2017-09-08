@@ -11,10 +11,13 @@
             <fieldset class="am-form-set">
                 <div class="am-u-sm-12">
                     <select id="sectionID" data-am-selected>
-                        <option value="-1">请选择章节</option>
+                        <option value="-1">请选择章</option>
                         {#foreach $sectionLists as $row#}
                             <option value="{#$row[0]#}">{#$row[1]#}</option>
                         {#/foreach#}
+                    </select>
+                    <select id="chapterID" data-am-selected>
+                        <option value="-1">请先选择章</option>
                     </select>
                     <span class="am-form-caret"></span>
                 </div>
@@ -127,6 +130,7 @@
             var pro = $("#problem").val();
             var options = new Array();
             var sid = $("#sectionID").val();
+            var cid = $("#chapterID").val();
             $("#options").children().each(function(index, target){
                 options.push($(target).children().eq(1).children().eq(0).val());
             })
@@ -134,8 +138,8 @@
             $("input[name=option]:checked").each(function(index, target){
                 answer.push($(target).val());
             });
-            if(sid == -1) {
-                $("#info").html("请选择章节");
+            if(sid == -1 || cid == -1) {
+                $("#info").html("请选择章和节");
                 $("#alert").modal();
             } else if(pro.length == 0) {
                 $("#problem").attr("placeholder", "请在这里输入题干");
@@ -158,14 +162,36 @@
                 }
 
                 if(errorSig == false) {
-                    $.post("/learning_c/problem/add_problem", {pro:pro, answer:answer, options:options, sectionID:s}, function(data){
-                        if(data.status == true) {
+                    $.post("/learning_c/problem/add_problem", {pro:pro, answer:answer, options:options, chapterID:cid}, function(data){
+                        if(data.status == false) {
+                            $("#info").html("提交失败，请重试");
+                            $("#alert").modal();
+                        } else {
                             $("#info").html("提交成功");
                             $("#alert").modal();
+                            $("#problem").val("");
+                            $("input[type='text']").val("");
+                            $("input[type='checkbox']").attr('checked', false);
                         }
                     })
                 }
             }
+        })
+
+        $("#sectionID").change(function(){
+            var val = $(this).val();
+            $.post("/learning_c/problem/get_chapter", {sectionID:val}, function(data){
+                var arg = eval("(" + data  + ")");
+                if(arg['status'] == true) {
+                    $("#chapterID").html('<option value="-1">请先选择章</option>');
+                    for(var i = 0; i < arg['res'].length; i++) {
+                        if(i == 0)
+                            $("#chapterID").append('<option selected value="'+arg['res'][i][0]+'">'+arg['res'][i][2]+'</option>');
+                        else
+                            $("#chapterID").append('<option value="'+arg['res'][i][0]+'">'+arg['res'][i][2]+'</option>');
+                    }
+                }
+            })
         })
     })
 </script>

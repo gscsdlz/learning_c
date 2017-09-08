@@ -18,10 +18,19 @@ class ProblemController extends Smarty
             return;
         }
 
-        $lists = $this->chapterModel->list_all();
+        $lists = $this->chapterModel->get_all_section();
         parent::assign('navbar', 'problemAdd');
         parent::assign('sectionLists', $lists);
         parent::display('add_item.html');
+    }
+
+    public function get_chapter() {
+        $id = post('sectionID');
+        $res = $this->chapterModel->get_chapter($id);
+        echo json_encode([
+            'status' => true,
+            'res' => $res
+        ]);
     }
 
     /**
@@ -31,14 +40,23 @@ class ProblemController extends Smarty
         $pro=post("pro");
         $answer=post("answer");
         $options=post("options");
-        $sectionID = post('sectionID');
+        $chapterID = post('chapterID');
 
         if (is_null($pro) || is_null($answer) || is_null($options))
             echo json_encode([
                 'status' => false
             ]);
         else {
-            $this->problemModel->insert_problem($pro, $options, $answer, $sectionID);
+            $row = $this->problemModel->insert_problem($pro, $options, $answer, $chapterID);
+            if($row > 0) {
+                echo json_encode([
+                    'status' => true
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => false
+                ]);
+            }
         }
     }
 

@@ -7,10 +7,10 @@ class ProblemModel extends DB
         parent::__construct();
     }//创建数据库连接
 
-    public function insert_problem($pro, $options, $answer, $sectionID)
+    public function insert_problem($pro, $options, $answer, $chapterID)
     {
-        $pro_id = parent::query("INSERT INTO problem (pro_info, tea_id, privilege, section_id) VALUES (?,?,?,?)",
-            [$pro, 1, 1, $sectionID]);//插入题目
+        $pro_id = parent::query("INSERT INTO problem (pro_info, tea_id, privilege, sec_cha_id) VALUES (?,?,?,?)",
+            [$pro, 1, 1, $chapterID]);//插入题目
         if ($pro_id > 0) {
             for ($i = 0; $i < count($options); $i++)
                 parent::query("INSERT INTO pro_option (option_info, pro_id, answer) VALUES (?, ?, ?)",
