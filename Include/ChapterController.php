@@ -24,10 +24,12 @@ class ChapterController extends Smarty
      */
     public function show()
     {
-        $sectionID = get("id", 0);
+        $sectionID = get("id", null);
         $section = $this->chapterModel->get_all_section($sectionID);
 
         if (!is_null($section) && count($section) > 0) {
+            if(is_null($sectionID))
+                $sectionID = $section[0][0];
             $res = $this->chapterModel->get_chapter($sectionID);
 
             parent::assign('section', $section[0]);

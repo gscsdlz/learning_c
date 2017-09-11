@@ -7,4 +7,5 @@ define('DBUSER', 'root');
 define("AllowRegister", true);
 
 define("SectionPageMax", 20);
+define("ProblemPageMax", 20);
 define('TimeOut', 7200);
