@@ -1,0 +1,188 @@
+{#include file='header.html'#}
+{#include file='navbar.html'#}
+<div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" style="margin-bottom:20px">
+    <h2 class="am-titlebar-title ">
+        新增题目
+    </h2>
+</div>
+<div class="am-g">
+    <div class="am-u-md-8 am-u-md-offset-2 am-text-center">
+        <form class="am-form">
+            <fieldset class="am-form-set">
+                <div class="am-u-sm-12">
+                    <select id="sectionID" data-am-selected>
+                        <option value="-1">请选择章</option>
+                        {#foreach $sectionLists as $row#}
+                        <option value="{#$row[0]#}" {#if $section_id == $row[0]#}selected{#/if#}>{#$row[1]#}</option>
+                        {#/foreach#}
+                    </select>
+                    <select id="chapterID" data-am-selected>
+                        <option value="-1">请先选择章</option>
+                    </select>
+                    <span class="am-form-caret"></span>
+                </div>
+                <input type="hidden" id="sec_cha_id" value="{#$sec_cha_id#}">
+            </fieldset>
+        </form>
+    </div>
+</div>
+<div class="am-g">
+    <div class="am-u-md-6 am-u-md-offset-3">
+        <form class="am-form am-form-horizontal">
+            <div class="am-form-group">
+                <label class="am-u-sm-2 am-form-label">题目</label>
+                <div class="am-u-sm-10">
+                    <textarea class="am-form-field" rows="5" id="problem">{#$pro_info#}</textarea>
+                </div>
+            </div>
+            <div class="am-form-group">
+                <label class="am-u-sm-2 am-form-label">选项个数</label>
+                <div class="am-u-sm-10">
+                    <select data-am-selected id="optionChange">
+                        {#for $i = 2 to 7#}
+                            <option value="{#$i#}" {#if $i == count($option_lists)#}selected{#/if#}>{#$i#}</option>
+                        {#/for#}
+                    </select>
+                </div>
+            </div>
+            <div id="options">
+                {#$i = 65#}
+                {#foreach $option_lists as $row#}
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">{#chr($i++)#}</label>
+                    <div class="am-u-sm-10">
+                        <input class="am-form-field" type="text" value="{#$row[1]#}" placeholder="请输入选项A">
+                    </div>
+                </div>
+                {#/foreach#}
+            </div>
+            <div class="am-form-group">
+                <label class="am-u-sm-2 am-form-label">答案</label>
+                <div class="am-u-sm-10" id="answers">
+                    {#$i = 0#}
+                    {#foreach $option_lists as $row#}
+                        <label class="am-checkbox-inline">
+                            <input type="checkbox" value="{#$i#}" name="option" {#if $row[3] == 1#}checked{#/if#}> {#chr($i + 65)#}
+                        </label>
+                    {#$i = $i + 1#}
+                    {#/foreach#}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="am-form-group">
+    <div class="am-u-sm-6 am-u-sm-offset-3 am-text-center">
+        <button type="button" id="submit" class="am-btn am-btn-primary">提交</button>
+    </div>
+</div>
+<div class="am-modal am-modal-alert" tabindex="-1" id="alert">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">提示信息</div>
+        <div class="am-modal-bd" id="info">
+
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn">确定</span>
+        </div>
+    </div>
+</div>
+<br/>
+<script>
+    var sec_cha_id = $("#sec_cha_id").val();
+
+    function refresh(){
+        var val = $("#sectionID").val();
+        $.post("/learning_c/problem/get_chapter", {sectionID:val}, function(data){
+            var arg = eval("(" + data  + ")");
+            if(arg['status'] == true) {
+                $("#chapterID").html('<option value="-1">请先选择章</option>');
+                for(var i = 0; i < arg['res'].length; i++) {
+                    if(sec_cha_id == arg['res'][i][0])
+                        $("#chapterID").append('<option selected value="'+arg['res'][i][0]+'">'+arg['res'][i][2]+'</option>');
+                    else
+                        $("#chapterID").append('<option value="'+arg['res'][i][0]+'">'+arg['res'][i][2]+'</option>');
+                }
+            }
+        })
+
+    }
+
+    $(document).ready(function(){
+
+
+        refresh();
+        $("#optionChange").change(function(){
+            var size = $(this).val();
+            var baseString = "";
+            var answerString = "";
+            for (var i = 0; i < size; i++) {
+                baseString += '<div class="am-form-group"><label class="am-u-sm-2 am-form-label">'+String.fromCharCode(65 + i)+'</label><div class="am-u-sm-10"><input type="text" class="am-form-field" placeholder="请输入选项'+String.fromCharCode(65 + i)+'"></div></div>';
+                answerString += '<label class="am-checkbox-inline"><input type="checkbox" value="'+i+'" name="option">'+String.fromCharCode(65 + i)+'</label>';
+            }
+            $("#options").html(baseString);
+            $("#answers").html(answerString);
+        })
+
+
+
+        $("#submit").click(function(){
+            var pro = $("#problem").val();
+            var options = new Array();
+            var sid = $("#sectionID").val();
+            var cid = $("#chapterID").val();
+            $("#options").children().each(function(index, target){
+                options.push($(target).children().eq(1).children().eq(0).val());
+            })
+            var answer = new Array();
+            $("input[name=option]:checked").each(function(index, target){
+                answer.push($(target).val());
+            });
+            if(sid == -1 || cid == -1) {
+                $("#info").html("请选择章和节");
+                $("#alert").modal();
+            } else if(pro.length == 0) {
+                $("#problem").attr("placeholder", "请在这里输入题干");
+                $("#info").html("题干不能为空");
+                $("#alert").modal();
+            } else if(typeof(answer) == 'undefined') {
+                $("#info").html("答案不能为空");
+                $("#alert").modal();
+            } else {
+                var errorSig = false;
+                for (var i = 0; i < options.length; ++i) {
+                    if(options[i].length == 0) {
+                        errorSig = true;
+                        $("#options").children().eq(i).addClass("am-form-error am-form-icon am-form-feedback");
+                        $("#options").children().eq(i).children().eq(1).append('<span class="am-icon-times"></span>');
+                    } else {
+                        $("#options").children().eq(i).removeClass("am-form-error am-form-icon am-form-feedback");
+                        $("#options").children().eq(i).children().eq(1).children().eq(1).remove();
+                    }
+                }
+
+                if(errorSig == false) {
+                    $.post("/learning_c/problem/save", {pro_id:{#$pro_id#}, pro:pro, answer:answer, options:options, chapterID:cid}, function(data){
+                        if(data.status == false) {
+                            $("#info").html("提交失败，请重试");
+                            $("#alert").modal();
+                        } else {
+                            $("#info").html("提交成功");
+                            $("#alert").modal();
+                            $("#problem").val("");
+                            $("input[type='text']").val("");
+                            $("input[type='checkbox']").attr('checked', false);
+                        }
+                    })
+                }
+            }
+        })
+
+        $("#sectionID").change(function(){
+            refresh();
+        })
+    })
+</script>
+{#include file='footer.html'#}

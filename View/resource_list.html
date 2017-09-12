@@ -2,110 +2,78 @@
 {#include file='navbar.html'#}
 <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
     <h2 class="am-titlebar-title ">
-        资源列表
+        资源管理列表
     </h2>
 </div>
-
+<p>&nbsp;</p>
 <div class="am-g">
-    <div class="am-u-lg-8 am-u-lg-offset-2">
-        <div class="am-g">
-            <div class="am-u-lg-offset-12 am-text-center" style="margin:20px 0px">
-                <button type="button" class="am-btn am-btn-primary">新增资源</button>
-            </div>
-        </div>
+    <div class="am-u-lg-2">
+        <ul class="am-list">
+            <li><a href="#">章节列表</a></li>
+            {#foreach $sectionLists as $row#}
+            <li><a href="/learning_c/resource/show/1/{#$row[0]#}">{#$row[1]#}</a></li>
+            {#/foreach#}
+        </ul>
+
+    </div>
+    <div class="am-u-lg-9 am-u-lg-offset-1">
         <table class="am-table">
             <thead>
                 <tr>
                     <th>资源标题</th>
                     <th>作者名</th>
                     <th>创建时间</th>
+                    <th>所属章节</th>
                     <th>操作</th>
                 </tr>
             </thead>
             <tbody>
+            {#foreach $res_lists as $row#}
                 <tr>
-                    <td><a href="#">C语言基本类型</a></td>
-                    <td>admin</td>
-                    <td>2017-09-03</td>
+                    <td><a href="#">{#$row[1]#}</a></td>
+                    <td>{#$row[3]#}</td>
+                    <td>{#date('Y-m-d', $row[2])#}</td>
+                    <td>{#$row[4]#}</td>
                     <td>
-                        <button type="button" class="am-btn am-btn-danger" data-am-modal="{target:'#delete_alert'}">删除</button>
-                        <button type="button" class="am-btn am-btn-success">修改</button>
+                        <span class="am-icon-edit am-icon" style="cursor: pointer"></span>
+                        <span class="am-icon-close am-icon aic" style="cursor: pointer;"></span>
+                        <input type="hidden" value="{#$row[0]#}"/>
                     </td>
                 </tr>
-                <tr>
-                    <td><a href="#">C语言基本类型</a></td>
-                    <td>admin</td>
-                    <td>2017-09-03</td>
-                    <td>
-                        <button type="button" class="am-btn am-btn-danger">删除</button>
-                        <button type="button" class="am-btn am-btn-success">修改</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td><a href="#">C语言基本类型</a></td>
-                    <td>admin</td>
-                    <td>2017-09-03</td>
-                    <td>
-                        <button type="button" class="am-btn am-btn-danger">删除</button>
-                        <button type="button" class="am-btn am-btn-success">修改</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td><a href="#">C语言基本类型</a></td>
-                    <td>admin</td>
-                    <td>2017-09-03</td>
-                    <td>
-                        <button type="button" class="am-btn am-btn-danger">删除</button>
-                        <button type="button" class="am-btn am-btn-success">修改</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td><a href="#">C语言基本类型</a></td>
-                    <td>admin</td>
-                    <td>2017-09-03</td>
-                    <td>
-                        <button type="button" class="am-btn am-btn-danger">删除</button>
-                        <button type="button" class="am-btn am-btn-success">修改</button>
-                    </td>
-                </tr>
+            {#/foreach#}
             </tbody>
         </table>
         </table>
-        <div class="am-g">
-            <div class="am-u-lg-12 am-text-select">
-                <ul data-am-widget="pagination" class="am-pagination am-pagination-select">
-                    <li class="am-pagination-prev"><a href="#">上一页</a></li>
-                    <li class="am-pagination-select">
-                        <select  data-am-selected>
-                            <option value="1">第1页</option>
-                            <option value="1">第2页</option>
-                            <option value="1">第3页</option>
-                            <option value="1">第4页</option>
+        <ul data-am-widget="pagination" class="am-pagination am-pagination-select">
+            <li class="am-pagination-prev"><a href="/learning_c/resource/show/{#($page - 1)#}/{#$sectionID#}">上一页</a></li>
 
-                        </select>
-                    </li>
-                    <li class="am-pagination-next"><a href="#">下一页</a></li>
-                </ul>
-            </div>
-        </div>
-
+            <li class="am-pagination-next"><a href="/learning_c/resource/show/{#($page + 1)#}/{#$sectionID#}">下一页</a></li>
+        </ul>
     </div>
 </div>
-<div class="am-modal am-modal-alert" tabindex="-1" id="delete_alert">
+<div class="am-modal am-modal-confirm" tabindex="-1" id="confirm">
     <div class="am-modal-dialog">
-        <div class="am-modal-hd">删除资源提醒</div>
-        <div class="am-modal-bd">
-            确认删除吗？删除后不可复原！
+        <div class="am-modal-hd">提示</div>
+        <div class="am-modal-bd" id="info">
         </div>
         <div class="am-modal-footer">
-            <span class="am-modal-btn" id="submit">确认</span>
+            <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+            <span class="am-modal-btn" data-am-modal-confirm>确定</span>
         </div>
     </div>
 </div>
 <script>
     $(document).ready(function(){
-        $(".am-btn-danger").click(function(){
+        $(".aic").click(function(){
+            var id = $(this).next().val();
+            $("#info").html("确认删除吗？删除后不可复原！");
+            $("#confirm").modal({
+                onConfirm:function (e) {
+                    $.post("/learning_c/resource/do_del", {res_id:id}, function(data){
 
+                    })
+                }
+            });
         })
     })
 </script>

@@ -7,7 +7,11 @@ class WORK {
 		    return new ChapterController();
         } else if ($className == 'ProblemController') {
             return new ProblemController();
-        } else {
+        } else if ($className == 'ExamController') {
+            return new ExamController();
+        } else if ($className == 'ResourceController') {
+            return new ResourceController();
+        }  else {
 			return new IndexController();
 		}
 	}

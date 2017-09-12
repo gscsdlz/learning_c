@@ -9,46 +9,37 @@
 <div class="am-g">
     <div class="am-u-lg-6 am-u-lg-offset-3">
         <form class="am-form">
-            <div class="am-panel am-panel-success">
-                <div class="am-panel-hd">
-                    1.C语言中测量字符串长度的函数是（）？<span class="am-icon-close" style="float:right" onclick="$(this).parent().next().toggle()"></span>
+            {#$i = 1#}
+            {#foreach $lists as $row#}
+            <div class="am-panel am-panel-default">
+                <div class="am-panel-hd" onclick="$(this).next().toggle()">
+                    {#$i#}、{#$row[0][0]#}
                 </div>
                 <div class="am-panel-bd">
-                    <div class="am-form-group">
-                        <label class="am-radio-inline"><input type="radio" value="1" name="select[0]"/>strcat</label><br/>
-                        <label class="am-radio-inline"><input type="radio" value="2" name="select[0]"/>strlen</label><br/>
-                        <label class="am-radio-inline"><input type="radio" value="3" name="select[0]"/>strcpy</label><br/>
-                        <label class="am-radio-inline"><input type="radio" value="4" name="select[0]"/>sizeof</label><br/>
+                    <div class="am-form-group afg">
+                        {#foreach $row[1] as $op#}
+                            <label class="am-radio-inline"><input type="radio" value="{#$op[0]#}" name="select[{#$i#}]"/>{#$op[1]#}</label><br/>
+                        {#/foreach#}
                     </div>
                 </div>
             </div>
-            <div class="am-panel am-panel-success">
-                <div class="am-panel-hd">
-                    2.C语言中测量字符串长度的函数是（）？<span class="am-icon-close" style="float:right" onclick="$(this).parent().next().toggle()"></span>
-                </div>
-                <div class="am-panel-bd">
-                    <div class="am-form-group">
-                        <label class="am-radio-inline"><input type="radio" value="5" name="select[1]"/>strcat</label><br/>
-                        <label class="am-radio-inline"><input type="radio" value="6" name="select[1]"/>strlen</label><br/>
-                        <label class="am-radio-inline"><input type="radio" value="7" name="select[1]"/>strcpy</label><br/>
-                        <label class="am-radio-inline"><input type="radio" value="8" name="select[1]"/>sizeof</label><br/>
-                    </div>
-                </div>
-            </div>
+            {#$i = $i+1#}
+            {#/foreach#}
+
             <div class="am-text-center">
-                <button class="am-btn am-btn-danger" type="button" data-am-modal="{target:'#submit_alert'}">提交作业</button>
+                <button class="am-btn am-btn-danger" type="button"  id="submit">提交作业</button>
             </div>
         </form>
     </div>
 </div>
-<div class="am-modal am-modal-alert" tabindex="-1" id="submit_alert">
+<div class="am-modal am-modal-alert" tabindex="-1" id="alert">
     <div class="am-modal-dialog">
         <div class="am-modal-hd">提交作业提醒</div>
-        <div class="am-modal-bd">
+        <div class="am-modal-bd" id="info">
             确认提交吗？提交后不可修改
         </div>
         <div class="am-modal-footer">
-            <span class="am-modal-btn" id="submit">确认</span>
+            <span class="am-modal-btn">确认</span>
         </div>
     </div>
 </div>
@@ -56,12 +47,34 @@
     $(document).ready(function(){
         $("#submit").click(function(){
             var answer = new Array();
-            for(var i = 0; i < $(".am-form-group").size(); i++)
-                answer.push($("input[name='select[" + i + "]']:checked").val());
-            $.post("/", {answer:answer}, function(){
+            var findSig = false;
 
-            })
+            for(var i = 1; i <= $(".afg").size(); i++) {
+                var val = $("input[name='select[" + i + "]']:checked").val();
+                if(typeof(val) == 'undefined')
+                {
+                    findSig = true;
+                    $("input[name='select[" + i + "]']").parent().parent().parent().parent().removeClass('am-panel-default');
+                    $("input[name='select[" + i + "]']").parent().parent().parent().parent().addClass('am-panel-danger');
+                }
+                else
+                {
+                    $("input[name='select[" + i + "]']").parent().parent().parent().parent().addClass('am-panel-default');
+                    $("input[name='select[" + i + "]']").parent().parent().parent().parent().removeClass('am-panel-danger');
+                    answer.push(val);
+                }
+            }
+            if(findSig)
+            {
+                $("#info").html("还有题目并未作答，请检查！");
+                $("#alert").modal();
+            } else {
+                $.post("/", {answer: answer}, function () {
+
+                })
+            }
         })
+
     })
 </script>
 {#include file='footer.html'#}

@@ -43,4 +43,13 @@ class ProblemModel extends DB
             [$pro_id]);
         return $res;
     }
+
+    public function get_pro_id($sectionID, $type = 0) {
+        if($type == 0)
+            return parent::query_fetch_all("SELECT pro_id FROM problem WHERE sec_cha_id = ?",
+                [$sectionID]);
+        else
+            return parent::query_fetch_all("SELECT pro_id FROM problem INNER JOIN chapter ON chapter.sec_cha_id = problem.sec_cha_id WHERE section_id = ?",
+                [$sectionID]);
+    }
 }

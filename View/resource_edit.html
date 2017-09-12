@@ -10,13 +10,13 @@
     <div class="am-u-lg-8 am-u-lg-offset-2 am-text-center">
         <form class="am-form am-form-inline">
             <div class="am-form-group">
-                <input type="text" id="title" class="am-form-field" value="" placeholder="请输入标题"/>
+                <input type="text" id="title" class="am-form-field" value="{#$title#}" placeholder="请输入标题"/>
             </div>
             <div class="am-form-group">
                 <select data-am-selected id="sectionID">
                     <option value="-1">请选择章</option>
                     {#foreach $sectionLists as $row#}
-                    <option value="{#$row[0]#}">{#$row[1]#}</option>
+                    <option {#if $row[0] == $sectionID#}selected{#/if#} value="{#$row[0]#}">{#$row[1]#}</option>
                     {#/foreach#}
                 </select>
             </div>
@@ -47,24 +47,40 @@
 <script src="/learning_c/ext/ueditor/editor/lang/zh-cn/zh-cn.js"></script>
 <script>
     var ue = UE.getEditor('editor');
+    var arg;
+    ue.ready(function() {
+        ue.setContent(arg['body']);
+    });
+    var sec_cha_id = {#$sec_cha_id#};
+
+    function refresh()
+    {
+        var val = $("#sectionID").val();
+        $.post("/learning_c/problem/get_chapter", {sectionID:val}, function(data){
+            var arg = eval("(" + data  + ")");
+            if(arg['status'] == true) {
+                $("#chapterID").html('<option value="-1">请先选择章</option>');
+                for(var i = 0; i < arg['res'].length; i++) {
+                    if(sec_cha_id == arg['res'][i][0])
+                        $("#chapterID").append('<option selected value="'+arg['res'][i][0]+'">'+arg['res'][i][2]+'</option>');
+                    else
+                        $("#chapterID").append('<option value="'+arg['res'][i][0]+'">'+arg['res'][i][2]+'</option>');
+                }
+            }
+        })
+    }
+
     $(document).ready(function(){
         $("#editor").css("height", "500px");
         $("#editor").css("margin", "40px 0px");
 
+        $.post("/learning_c/resource/get_body", {resid:{#$resID#}}, function(data){
+            arg = eval("(" + data + ")");
+
+        })
+        refresh();
         $("#sectionID").change(function(){
-            var val = $(this).val();
-            $.post("/learning_c/problem/get_chapter", {sectionID:val}, function(data){
-                var arg = eval("(" + data  + ")");
-                if(arg['status'] == true) {
-                    $("#chapterID").html('<option value="-1">请先选择章</option>');
-                    for(var i = 0; i < arg['res'].length; i++) {
-                        if(i == 0)
-                            $("#chapterID").append('<option selected value="'+arg['res'][i][0]+'">'+arg['res'][i][2]+'</option>');
-                        else
-                            $("#chapterID").append('<option value="'+arg['res'][i][0]+'">'+arg['res'][i][2]+'</option>');
-                    }
-                }
-            })
+            refresh();
         })
 
         $("#submit").click(function(){
