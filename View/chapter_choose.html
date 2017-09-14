@@ -1,0 +1,30 @@
+{#include file='header.html'#}
+{#include file='navbar.html'#}
+<div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" style="margin-bottom:20px">
+    <h2 class="am-titlebar-title ">
+        选择章节
+    </h2>
+</div>
+<div class="am-g">
+    <div class="am-u-lg-10 am-u-lg-offset-2">
+    <div class="js-masonry" data-masonry-options='{ "itemSelector": ".item", "columnWidth": 300 }'>
+        {#foreach $lists as $key => $row#}
+        <div class="item">
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd">
+                {#$key#}
+            </div>
+            <div class="am-panel-bd">
+            {#foreach $row as $r#}
+                <ul class="am-list am-list-static am-list-border">
+                    <li><a href="/learning_c/exam/show/{#$r[0]#}">{#$r[1]#}</a></li>
+                </ul>
+            {#/foreach#}
+            </div>
+        </div>
+        </div>
+        {#/foreach#}
+    </div>
+    </div>
+</div>
+{#include file='footer.html'#}
