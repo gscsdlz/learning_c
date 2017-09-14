@@ -93,11 +93,15 @@ class ProblemController extends Smarty
     }
 
     public function show() {
-        $section = get('pid', null);
-        $page = get('id', 1);
+        $section = (int)get('pid', null);
+        $page = (int)get('id', 1);
+        if($page < 1)
+            $page = 1;
         $res = $this->problemModel->get_problem($page, $section);
         $lists = $this->chapterModel->get_all_section();
 
+        parent::assign('page', $page);
+        parent::assign('sectionID', $section);
         parent::assign('sectionLists', $lists);
         parent::assign('lists', $res);
         parent::display('problem_list.html');
@@ -109,6 +113,15 @@ class ProblemController extends Smarty
         $answer=post("answer");
         $options=post("options");
         $chapterID = post('chapterID');
-
+        $row = $this->problemModel->update_problem($pro_id, $pro, $options, $answer, $chapterID);
+        if($row > 0) {
+            echo json_encode([
+                'status' => true
+            ]);
+        } else {
+            echo json_encode([
+                'status' => false
+            ]);
+        }
     }
 }

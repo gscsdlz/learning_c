@@ -35,7 +35,7 @@
                     <td>{#date('Y-m-d', $row[2])#}</td>
                     <td>{#$row[4]#}</td>
                     <td>
-                        <span class="am-icon-edit am-icon" style="cursor: pointer"></span>
+                        <span class="am-icon-edit am-icon" style="cursor: pointer" onclick="window.location.href='/learning_c/resource/edit/{#$row[0]#}'"></span>
                         <span class="am-icon-close am-icon aic" style="cursor: pointer;"></span>
                         <input type="hidden" value="{#$row[0]#}"/>
                     </td>

@@ -19,6 +19,20 @@ class ProblemModel extends DB
         return 1;//返回答案：1，2，3，
     }
 
+    public function update_problem($pro_id, $pro, $options, $answer, $chapterID)
+    {
+        $row = parent::query("UPDATE problem SET pro_info = ?, tea_id = ?, privilege = ?, sec_cha_id = ? WHERE pro_id = ?",
+            [$pro, 1, 1, $chapterID, $pro_id]);
+        parent::query("DELETE FROM pro_option WHERE pro_id = ?",
+            [$pro_id]);
+        for($i = 0; $i < count($options); $i++) {
+            parent::query("INSERT INTO pro_option (option_info, pro_id, answer) VALUES (?, ?, ?)",
+                [$options[$i], $pro_id, in_array($i, $answer)]);//插入选项
+        }
+        return 1;
+
+    }
+
     public function get_problem($page, $section = null)
     {
         $pms = ProblemPageMax;

@@ -97,10 +97,10 @@
                 $("#info").html("文章内容不能为空！");
                 $("#alert").modal();
             } else {
-                $.post("/learning_c/resource/do_add", {sec_cha_id:sec_cha_id, title:title, body:body}, function(data){
+                $.post("/learning_c/resource/do_edit", {resid:{#$resID#},sec_cha_id:sec_cha_id, title:title, body:body}, function(data){
                     var arg = eval("(" + data + ")");
                     if (arg['status'] == true) {
-                        window.location.href = '/learning_c/resource/lists';
+                        window.location.href = '/learning_c/resource/show';
                     } else {
                         $("#info").html("提交失败，请重试");
                         $("#alert").modal();

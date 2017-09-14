@@ -89,4 +89,35 @@ class ResourceController extends Smarty
         ]);
     }
 
+    public function do_edit()
+    {
+        $title = post('title');
+        $sec_cha_id = post('sec_cha_id');
+        $body = post('body');
+        $res_id = post('resid');
+        $tea_id = $_SESSION['tea_id'];
+        $row = $this->resourceModel->update($res_id, $title, $sec_cha_id, $body, $tea_id);
+        if($row > 0)
+            echo json_encode([
+                'status' => true
+            ]);
+        else
+            echo json_encode([
+                'status' => false
+            ]);
+    }
+
+    public function get()
+    {
+
+    }
+
+    public function learning()
+    {
+        $resid = get('id');
+        parent::assign('body', $this->resourceModel->get_body($resid));
+        parent::assign('lists', $this->resourceModel->get_all_resource());
+        parent::display('learning.html');
+    }
+
 }

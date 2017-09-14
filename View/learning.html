@@ -1,0 +1,21 @@
+{#include file='header.html'#}
+{#include file='navbar.html'#}
+<div class="am-g">
+    <div class="am-u-lg-2 am-u-lg-offset-2">
+        <ul class="am-nav">
+            <li class="am-nav-header">文章列表</li>
+            {#foreach $lists as $key => $row#}
+            <li class="am-nav-header">{#$key#}</li>
+                {#foreach $row as $r#}
+                    {#if !(is_null($r[0]) || is_null($r[1]))#}
+                    <li><a href="/learning_c/resource/learning/{#$r[1]#}">{#$r[0]#}</a></li>
+                    {#/if#}
+                {#/foreach#}
+            {#/foreach#}
+        </ul>
+    </div>
+    <div class="am-u-lg-7 am-u-end" style="border-left: 1px gray solid" >
+        {#$body[0]#}
+    </div>
+</div>
+{#include file='footer.html'#}

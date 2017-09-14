@@ -45,4 +45,23 @@ class ResourceModel extends DB
         return parent::query_one("SELECT body FROM learning_resource WHERE resource_id = ?",
             [$res_id]);
     }
+
+    public function update($res_id, $title, $sec_cha_id, $body, $tea_id)
+    {
+        return parent::query("UPDATE learning_resource SET title = ?, sec_cha_id = ?, body = ?, tea_id = ? WHERE resource_id = ?",
+            [$title, $sec_cha_id, $body, $tea_id, $res_id]);
+    }
+
+    public function get_all_resource()
+    {
+        $res = parent::query("SELECT learning_resource.title, learning_resource.resource_id, section_name FROM chapter LEFT JOIN  learning_resource ON learning_resource.sec_cha_id = chapter.sec_cha_id LEFT JOIN section ON section.section_id = chapter.section_id WHERE 1");
+        $args = array();
+        while ($row = $res->fetch(PDO::FETCH_NUM)) {
+            if(isset($args[$row[2]]))
+                $args[$row[2]][] = [$row[0], $row[1]];
+            else
+                $args[$row[2]][] = [$row[0], $row[1]];
+        }
+        return $args;
+    }
 }

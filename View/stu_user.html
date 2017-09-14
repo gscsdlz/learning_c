@@ -1,0 +1,81 @@
+{#include file='header.html'#}
+{#include file='navbar.html'#}
+<div class="am-g">
+    <div class="am-u-lg-2 am-u-lg-offset-2">
+        <table class="am-table">
+            <tr>
+                <td>姓名</td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>学号</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>班级</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>年级</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>任课教师</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>注册时间</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>上次登录时间</th>
+                <td></td>
+            </tr>
+            <tr>
+
+            </tr>
+        </table>
+        <button class="am-btn am-btn-primary" type="button">修改信息</button>
+    </div>
+    <div class="am-u-lg-8">
+        <h1>历次测试情况</h1>
+        <hr/>
+        <div class="js-masonry" data-masonry-options='{ "itemSelector": ".item", "columnWidth": 150 }'>
+           {#for $i = 1 to 10#}
+            <div class="item">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">
+                        XXX章节<br/>第X次测验
+                    </div>
+                    <div class="am-panel-body">
+                        <table class="am-table">
+                            <tr>
+                                <th>开始时间</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>结束时间</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>题目数量</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>正确率</th>
+                                <td></td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <div class="am-panel-footer  am-text-center">
+                        <button class="am-btn am-btn-primary" type="button">查看详情</button>
+                    </div>
+                </div>
+            </div>
+           {#/for#}
+        </div>
+
+    </div>
+</div>
+{#include file='footer.html'#}

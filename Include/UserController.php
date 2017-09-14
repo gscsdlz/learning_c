@@ -36,15 +36,20 @@ class UserController extends Smarty
         }
     }
 
-    public function test() {
-        parent::display("CaptureManager.html");
-    }
 
     /**
      * 控制用户注销
      */
     public function logout() {
-
+        if (isset ( $_SESSION ['username'] )) {
+            $_SESSION = array ();
+            session_destroy ();
+            setcookie ( 'PHPSESSID', '', time () - 3600, '/', '', 0, 0 );
+        }
+        echo json_encode ( array (
+            'status' => true
+        ) );
+        header('Location:/learning_c');
     }
 
     /**
@@ -87,5 +92,9 @@ class UserController extends Smarty
      */
     public function update_info() {
 
+    }
+
+    public function show_stu() {
+        parent::display('stu_user.html');
     }
 }
