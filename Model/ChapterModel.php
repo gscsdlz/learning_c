@@ -13,12 +13,12 @@ class ChapterModel extends DB
         parent::__construct();
     }
 
-    public function get_chapter($sectionID)
+    public function get_chapter($sectionID = null)
     {
         return parent::query_fetch_all("SELECT chapter.sec_cha_id, chapter.chapter_id, chapter.chapter_name, COUNT(resource_id), COUNT(pro_id)
           FROM chapter LEFT JOIN learning_resource ON chapter.sec_cha_id = learning_resource.sec_cha_id 
-          LEFT JOIN problem ON problem.sec_cha_id = chapter.sec_cha_id WHERE chapter.section_id = ? 
-          GROUP BY chapter.sec_cha_id", [$sectionID]);
+          LEFT JOIN problem ON problem.sec_cha_id = chapter.sec_cha_id WHERE chapter.section_id = ? OR ? is null 
+          GROUP BY chapter.sec_cha_id", [$sectionID, $sectionID]);
     }
 
     public function remove($section_id)
@@ -67,6 +67,16 @@ class ChapterModel extends DB
     public function get_all_section($sectionID = null) {
         return parent::query_fetch_all("SELECT * FROM section WHERE section_id = ? OR ? is null",
             [$sectionID, $sectionID]);
+    }
+
+    public function get_all_chapter()
+    {
+        $res =  parent::query("SELECT chapter.chapter_name, section.section_name, chapter.sec_cha_id FROM section LEFT JOIN chapter ON section.section_id = chapter.section_id");
+        $arg = array();
+        while($row = $res->fetch(PDO::FETCH_NUM)) {
+            $arg[$row[1]][] = [$row[2], $row[0]];
+        }
+        return $arg;
     }
 
     public function exchange_chapter_id() {
