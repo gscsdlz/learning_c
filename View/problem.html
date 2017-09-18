@@ -13,10 +13,11 @@
             {#foreach $lists as $row#}
             <div class="am-panel am-panel-default">
                 <div class="am-panel-hd" onclick="$(this).next().toggle()">
-                    {#$i#}、{#$row[0][0]#}
+                    {#$i#}、{#$row[0][1]#}
                 </div>
                 <div class="am-panel-bd">
                     <div class="am-form-group afg">
+                        <input type="hidden" value="{#$row[0][0]#}">
                         {#foreach $row[1] as $op#}
                             <label class="am-radio-inline"><input type="radio" value="{#$op[0]#}" name="select[{#$i#}]"/>{#$op[1]#}</label><br/>
                         {#/foreach#}
@@ -47,10 +48,14 @@
     $(document).ready(function(){
         $("#submit").click(function(){
             var answer = new Array();
+            var key = new Array();
             var findSig = false;
 
             for(var i = 1; i <= $(".afg").size(); i++) {
+
                 var val = $("input[name='select[" + i + "]']:checked").val();
+                var k = $("input[name='select[" + i + "]'").parent().parent().children().eq(0).val();
+                key.push(k);
                 if(typeof(val) == 'undefined')
                 {
                     findSig = true;
@@ -69,8 +74,13 @@
                 $("#info").html("还有题目并未作答，请检查！");
                 $("#alert").modal();
             } else {
-                $.post("/", {answer: answer}, function () {
-
+                $.post("/learning_c/exam/answer", {options: answer, pros:key, log_id:{#$log_id#}}, function (data) {
+                    var arg = eval('(' + data + ")");
+                    if(arg['status'] == true) {
+                        $("#info").html("提交成功 3秒后自动跳转");
+                        $("#alert").modal();
+                        window.setTimeout("window.location.href='/learning_c/exam/result/{#$log_id#}'", 3000);
+                    }
                 })
             }
         })

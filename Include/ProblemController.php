@@ -47,7 +47,7 @@ class ProblemController extends Smarty
                 'status' => false
             ]);
         else {
-            $row = $this->problemModel->insert_problem($pro, $options, $answer, $chapterID);
+            $row = $this->problemModel->insert_problem($pro, $options, $answer, $chapterID, $_SESSION['tea_id']);
             if($row > 0) {
                 echo json_encode([
                     'status' => true
@@ -82,13 +82,16 @@ class ProblemController extends Smarty
     public function modify_problem() {
         $pro_id = (int)get('id');
         $res = $this->problemModel->get_info($pro_id);
+
         $lists = $this->chapterModel->get_all_section();
+
         parent::assign('sectionLists', $lists);
         parent::assign('option_lists', $res[1]);
-        parent::assign('pro_info', $res[0][0]);
+        parent::assign('pro_info', $res[0][1]);
         parent::assign('pro_id', $pro_id);
-        parent::assign('section_id', $res[0][1]);
-        parent::assign('sec_cha_id', $res[0][2]);
+        parent::assign('section_id', $res[0][2]);
+        parent::assign('sec_cha_id', $res[0][3]);
+        parent::assign('option', $res[0][4]);
         parent::display('problem_edit.html');
     }
 
@@ -113,7 +116,7 @@ class ProblemController extends Smarty
         $answer=post("answer");
         $options=post("options");
         $chapterID = post('chapterID');
-        $row = $this->problemModel->update_problem($pro_id, $pro, $options, $answer, $chapterID);
+        $row = $this->problemModel->update_problem($pro_id, $pro, $options, $answer, $chapterID, $_SESSION['tea_id']);
         if($row > 0) {
             echo json_encode([
                 'status' => true

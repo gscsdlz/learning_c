@@ -13,7 +13,6 @@
             <tr>
                 <th>题目编号</th>
                 <th>题干</th>
-                <th>权限</th>
                 <th>所属章节</th>
                 <th>出题人</th>
                 <th>创建时间</th>
@@ -23,16 +22,9 @@
             <tr>
                 <td>{#$row[0]#}</td>
                 <td><a href="#">{#$row[1]#}</a></td>
-                <td>
-                    {#if $row[2] == 1#}
-                        公布答案
-                    {#else#}
-                        不公布答案
-                    {#/if#}
-                </td>
-                <td>{#$row[5]#}</td>
                 <td>{#$row[4]#}</td>
                 <td>{#$row[3]#}</td>
+                <td>{#$row[2]#}</td>
                 <td>
                     <span class="am-icon-close" style="cursor: pointer"></span>&nbsp;
                     <span class="am-icon-edit" style="cursor: pointer;"></span>&nbsp;

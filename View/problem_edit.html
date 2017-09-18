@@ -49,9 +49,9 @@
                 {#$i = 65#}
                 {#foreach $option_lists as $row#}
                 <div class="am-form-group">
-                    <label class="am-u-sm-2 am-form-label">{#chr($i++)#}</label>
+                    <label class="am-u-sm-2 am-form-label">{#chr($i)#}</label>
                     <div class="am-u-sm-10">
-                        <input class="am-form-field" type="text" value="{#$row[1]#}" placeholder="请输入选项A">
+                        <input class="am-form-field" type="text" value="{#$row[1]#}" placeholder="请输入选项{#chr($i++)#}">
                     </div>
                 </div>
                 {#/foreach#}
@@ -62,7 +62,7 @@
                     {#$i = 0#}
                     {#foreach $option_lists as $row#}
                         <label class="am-checkbox-inline">
-                            <input type="checkbox" value="{#$i#}" name="option" {#if $row[3] == 1#}checked{#/if#}> {#chr($i + 65)#}
+                            <input type="radio" value="{#$i#}" name="option" {#if $option == $row[0]#}checked{#/if#}> {#chr($i + 65)#}
                         </label>
                     {#$i = $i + 1#}
                     {#/foreach#}
@@ -120,7 +120,7 @@
             var answerString = "";
             for (var i = 0; i < size; i++) {
                 baseString += '<div class="am-form-group"><label class="am-u-sm-2 am-form-label">'+String.fromCharCode(65 + i)+'</label><div class="am-u-sm-10"><input type="text" class="am-form-field" placeholder="请输入选项'+String.fromCharCode(65 + i)+'"></div></div>';
-                answerString += '<label class="am-checkbox-inline"><input type="checkbox" value="'+i+'" name="option">'+String.fromCharCode(65 + i)+'</label>';
+                answerString += '<label class="am-checkbox-inline"><input type="radio" value="'+i+'" name="option"> '+String.fromCharCode(65 + i)+' </label>';
             }
             $("#options").html(baseString);
             $("#answers").html(answerString);
@@ -168,12 +168,14 @@
                         if(data.status == false) {
                             $("#info").html("提交失败，请重试");
                             $("#alert").modal();
+
                         } else {
                             $("#info").html("提交成功");
                             $("#alert").modal();
                             $("#problem").val("");
                             $("input[type='text']").val("");
                             $("input[type='checkbox']").attr('checked', false);
+                            window.setTimeout('window.location.href="/learning_c/problem/show"', 3000);
                         }
                     })
                 }
