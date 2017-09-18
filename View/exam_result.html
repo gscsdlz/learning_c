@@ -1,0 +1,43 @@
+{#include file='header.html'#}
+{#include file='navbar.html'#}
+<div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
+    <h2 class="am-titlebar-title ">
+        {#$chapterName#} <br/>开始时间：{#date('Y-m-d H:i:s', $stime)#}<br/>结束时间：{#date('Y-m-d H:i:s', $etime)#}
+        <br/>
+        题数：{#count($pro_info)#}
+    </h2>
+</div>
+<p>&nbsp;</p>
+<div class="am-g">
+    <div class="am-u-lg-6 am-u-lg-offset-3">
+        <form class="am-form">
+            {#$i = 0#}
+            {#foreach $pro_info as $row#}
+            <div class="am-panel am-panel-default">
+                <div class="am-panel-hd">
+                    {#$i+1#}、{#$row[3]#}
+                    <img src="/learning_c/Storage/Image/{#if $row[2] == $row[4]#}ac.png{#else#}wa.png{#/if#}" width="20px" style="float: left">
+                    <span class="am-icon am-icon-cloud" style="float: right;cursor: pointer"></span>
+                </div>
+                <div class="am-panel-bd">
+                    <div class="am-form-group afg">
+                        <input type="hidden" value="{#$row[0][0]#}">
+                        {#foreach $pro_option[$i] as $op#}
+                        <label  {#if $row[4] == $op[0]#}class="am-radio-inline am-text-success" style="font-size:20px"{#elseif $row[2] == $op[0]#}class="am-radio-inline am-text-danger"  style="font-size:20px"{#else#}class="am-radio-inline"{#/if#} >
+                        <input disabled type="radio" value="{#$op[0]#}" {#if $row[4]==$op[0] || $row[2] == $op[0]#}checked{#/if#} />
+                        {#$op[1]#}</label><br/>
+                        {#/foreach#}
+                    </div>
+                </div>
+            </div>
+            {#$i = $i+1#}
+            {#/foreach#}
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+
+    })
+</script>
+{#include file='footer.html'#}
