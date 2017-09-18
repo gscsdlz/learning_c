@@ -77,16 +77,16 @@
                     <label class="am-u-sm-2 am-form-label">答案</label>
                     <div class="am-u-sm-10" id="answers">
                             <label class="am-checkbox-inline">
-                                <input type="checkbox" value="0" name="option"> A
+                                <input type="radio" value="0" name="option"> A
                             </label>
                             <label class="am-checkbox-inline ">
-                                <input type="checkbox" value="1" name="option"> B
+                                <input type="radio" value="1" name="option"> B
                             </label>
                             <label class="am-checkbox-inline ">
-                                <input type="checkbox" value="2" name="option"> C
+                                <input type="radio" value="2" name="option"> C
                             </label>
                             <label class="am-checkbox-inline ">
-                                <input type="checkbox" value="3" name="option"> D
+                                <input type="radio" value="3" name="option"> D
                             </label>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
             var answerString = "";
             for (var i = 0; i < size; i++) {
                 baseString += '<div class="am-form-group"><label class="am-u-sm-2 am-form-label">'+String.fromCharCode(65 + i)+'</label><div class="am-u-sm-10"><input type="text" class="am-form-field" placeholder="请输入选项'+String.fromCharCode(65 + i)+'"></div></div>';
-                answerString += '<label class="am-checkbox-inline"><input type="checkbox" value="'+i+'" name="option">'+String.fromCharCode(65 + i)+'</label>';
+                answerString += '<label class="am-checkbox-inline"><input type="radio" value="'+i+'" name="option"> '+String.fromCharCode(65 + i)+' </label>';
             }
             $("#options").html(baseString);
             $("#answers").html(answerString);

@@ -8,7 +8,7 @@
     <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
         <ul class="am-nav am-nav-pills am-topbar-nav">
             <li{#if !isset($navbar)#} class='am-active'{#/if#}><a href="#">首页</a></li>
-            <li><a href="#">练习</a></li>
+            <li><a href="/learning_c/exam">练习</a></li>
             <li><a href="/learning_c/resource/learning">资源学习</a></li>
             {#if isset($smarty.session.privilege) && $smarty.session.privilege == 1#}
             <li{#if isset($navbar) && $navbar == 'Chapter'#} class='am-active'{#/if#}><a href="/learning_c/chapter/show">章节管理</a></li>
