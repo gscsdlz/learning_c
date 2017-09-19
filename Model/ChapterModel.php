@@ -82,4 +82,9 @@ class ChapterModel extends DB
     public function exchange_chapter_id() {
 
     }
+
+    public function get_chapter_info($chapter) {
+        return parent::query_fetch_all("SELECT * FROM section LEFT JOIN chapter USING (section_id) WHERE sec_cha_id = ? ",
+            [$chapter]);
+    }
 }

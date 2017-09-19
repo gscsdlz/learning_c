@@ -127,4 +127,32 @@ class ProblemController extends Smarty
             ]);
         }
     }
+
+    public function collect(){
+        $pro_id = post('pro_id');
+        $stu_id = $_SESSION['stu_id'];
+        $id = $this->problemModel->collect($pro_id, $stu_id);
+        if($id > 0)
+            echo json_encode([
+                'status' => true
+            ]);
+        else
+            echo json_encode([
+                'status' => false
+            ]);
+    }
+
+    public function del_collect(){
+        $pro_id = post('pro_id');
+
+        $id = $this->problemModel->del_collect($pro_id, $_SESSION['stu_id']);
+        if($id > 0)
+            echo json_encode([
+                'status' => true
+            ]);
+        else
+            echo json_encode([
+                'status' => false
+            ]);
+    }
 }

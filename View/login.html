@@ -140,7 +140,9 @@
                 $.post("/learning_c/user/register", {username:nUsername, realname:realname, password:pass1,act:act}, function(data){
                     var arg = eval('(' + data + ')');
                     if(arg['status'] == true) {
-                        alert("ok");
+                        $("#info").html("注册成功，3秒以后跳转");
+                        $("#alert").modal();
+                        window.setTimeout('window.location.reload()', 3000);
                     } else {
                         $("#info").html(arg['info']);
                         $("#alert").modal();

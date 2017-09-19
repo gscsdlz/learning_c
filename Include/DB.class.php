@@ -62,7 +62,7 @@ class DB {
      * @param array $args 动态绑定参数
      * @return 返回一行数据或者null
      */
-    public function query_one($sql, $args = null) {
+    public function query_one($sql, $args = null, $fetch_model = PDO::FETCH_NUM) {
         try {
             $result = $this->query($sql, $args);
         } catch ( PDOException $e ) {
@@ -70,7 +70,7 @@ class DB {
         }
 
         if ($result->rowCount () != 0) {
-            $row = $result->fetch ( PDO::FETCH_NUM );
+            $row = $result->fetch ( $fetch_model );
             return $row;
         } else {
             return null;

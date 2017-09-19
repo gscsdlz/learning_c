@@ -5,8 +5,33 @@
         <a id="godesktop" data-rel="desktop" class="am-footer-desktop" href="javascript:">版本1.0</a>
     </div>
     <div class="am-footer-miscs ">
-        <p>当前时间:{#date("Y-m-d H:i:s", time())#}</p>
+        <p >当前时间:<span id="currTime">{#date("Y-m-d H:i:s", time())#}</span></p>
     </div>
 </footer>
+<script>
+    function auto_event(){
+        var unixnow = Date.parse(new Date($("#currTime").html())) / 1000;
+        unixnow = unixnow + 1;
+
+        $("#currTime").html(getTime(unixnow));
+    }
+
+    function getTime() {
+        var ts = arguments[0] || 0;
+        var t,y,m,d,h,i,s;
+        t = ts ? new Date(ts*1000) : new Date();
+        y = t.getFullYear();
+        m = t.getMonth()+1;
+        d = t.getDate();
+        h = t.getHours();
+        i = t.getMinutes();
+        s = t.getSeconds();
+        // 可依据须要在这里定义时间格式
+        return y+'-'+(m<10?'0'+m:m)+'-'+(d<10?'0'+d:d)+' '+(h<10?'0'+h:h)+':'+(i<10?'0'+i:i)+':'+(s<10?'0'+s:s);
+    }
+    $(document).ready(function(){
+        setInterval(auto_event,1000);
+    })
+</script>
 </body>
 </html>

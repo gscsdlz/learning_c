@@ -7,9 +7,11 @@
 
     <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
         <ul class="am-nav am-nav-pills am-topbar-nav">
-            <li{#if !isset($navbar)#} class='am-active'{#/if#}><a href="#">首页</a></li>
-            <li><a href="/learning_c/exam">练习</a></li>
-            <li><a href="/learning_c/resource/learning">资源学习</a></li>
+            <li{#if !isset($navbar)#} class='am-active'{#/if#}><a href="/learning_c">首页</a></li>
+            {#if isset($smarty.session.stu_id) #}
+            <li{#if isset($navbar) && $navbar == 'exam'#} class='am-active'{#/if#}><a href="/learning_c/exam">练习</a></li>
+            {#/if#}
+            <li{#if isset($navbar) && $navbar == 'resource'#} class='am-active'{#/if#}><a href="/learning_c/resource/learning">资源学习</a></li>
             {#if isset($smarty.session.privilege) && $smarty.session.privilege == 1#}
             <li{#if isset($navbar) && $navbar == 'Chapter'#} class='am-active'{#/if#}><a href="/learning_c/chapter/show">章节管理</a></li>
             <li class="am-dropdown" data-am-dropdown>
@@ -45,7 +47,7 @@
             <div class="am-dropdown" data-am-dropdown="{boundary: '.am-topbar'}">
                 <button class="am-btn am-btn-secondary am-topbar-btn am-btn-sm am-dropdown-toggle" data-am-dropdown-toggle>{#$smarty.session.username#}<span class="am-icon-caret-down"></span></button>
                 <ul class="am-dropdown-content">
-                    <li><a href="#">个人中心</a></li>
+                    <li><a href="/learning_c/user/show_{#if isset($smarty.session.stu_id)#}stu/{#$smarty.session.stu_id#}{#elseif isset($smarty.session.tea_id)#}tea/{#$smarty.session.tea_id#}{#/if#}">个人中心</a></li>
                     <li><a href="/learning_c/user/logout">退出登录</a></li>
                 </ul>
             </div>

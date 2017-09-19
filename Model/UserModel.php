@@ -16,9 +16,15 @@ class UserModel extends DB
 
         $arg = parent::query_one($sql, [$username]);
 
-        if($arg[0] == sha1($password))
+        if($arg[0] == sha1($password)) {
+            if($act == 0)
+                parent::query("UPDATE stu_user SET last_time = ? WHERE stu_number = ?",
+                    [time(), $username]);
+            else
+                parent::query("UPDATE tea_user SET last_time = ? WHERE tea_number = ?",
+                    [time(), $username]);
             return $arg;
-        else
+        } else
             return false;
     }
 
@@ -33,5 +39,20 @@ class UserModel extends DB
         } else {
             return -1;
         }
+    }
+
+    public function get_stu_info($stu_name) {
+        return parent::query_one("SELECT * FROM stu_user WHERE stu_id = ?",
+            [$stu_name], PDO::FETCH_NAMED);
+    }
+
+    public function update_pass($pass1, $pass2, $stu_id) {
+        return parent::query("UPDATE stu_user SET password = ? WHERE stu_id = ?",
+            [sha1($pass1), $stu_id]);
+    }
+
+    public function update($user_id, $stu_name, $stu_number, $class, $grade) {
+        return parent::query("UPDATE stu_user SET stu_name = ?, stu_number = ?, class=?, grade = ? WHERE stu_id = ?",
+            [$stu_name, $stu_number, $class, $grade, $user_id]);
     }
 }

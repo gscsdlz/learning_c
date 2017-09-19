@@ -5,19 +5,19 @@
         <table class="am-table">
             <tr>
                 <td>姓名</td>
-                <td></td>
+                <td>{#$stu_name#}</td>
             </tr>
             <tr>
                 <th>学号</th>
-                <td></td>
+                <td>{#$stu_number#}</td>
             </tr>
             <tr>
                 <th>班级</th>
-                <td></td>
+                <td>{#$class#}</td>
             </tr>
             <tr>
                 <th>年级</th>
-                <td></td>
+                <td>{#$grade#}</td>
             </tr>
             <tr>
                 <th>任课教师</th>
@@ -25,57 +25,172 @@
             </tr>
             <tr>
                 <th>注册时间</th>
-                <td></td>
+                <td>{#$reg_time#}</td>
             </tr>
             <tr>
                 <th>上次登录时间</th>
-                <td></td>
+                <td>{#date('Y-m-d H:i:s', $last_time)#}</td>
             </tr>
             <tr>
-
+                <th>所有题目数</th>
+                <td>{#$mount#}</td>
+            </tr>
+            <tr>
+                <th>正确率</th>
+                <td>{#$acs#} / {#if $mount == 0#}{#$mount = 1#}{#/if#}{#number_format($acs / $mount * 100, 2, '.', '')#}%</td>
+            </tr>
+            <tr>
+                <th>收藏题目数</th>
+                <td>{#$collect#}<span style="float: right"><a href="/learning_c/exam/show_collect/{#$stu_id#}">查看全部</a></span></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
             </tr>
         </table>
-        <button class="am-btn am-btn-primary" type="button">修改信息</button>
+        <button class="am-btn am-btn-primary" type="button"  data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0, width: 400, height: 500}">修改信息</button>
     </div>
     <div class="am-u-lg-8">
         <h1>历次测试情况</h1>
         <hr/>
         <div class="js-masonry" data-masonry-options='{ "itemSelector": ".item", "columnWidth": 150 }'>
-           {#for $i = 1 to 10#}
+           {#foreach $exams as $row#}
+            {#if $row[4] != 0#}
             <div class="item">
                 <div class="am-panel am-panel-default">
                     <div class="am-panel-hd">
-                        XXX章节<br/>第X次测验
+                        {#$row[3]#}<br/>
                     </div>
                     <div class="am-panel-body">
                         <table class="am-table">
                             <tr>
                                 <th>开始时间</th>
-                                <td></td>
+                                <td>{#date('Y-m-d H:i', $row[1])#}</td>
                             </tr>
                             <tr>
                                 <th>结束时间</th>
-                                <td></td>
+                                <td>{#date('Y-m-d H:i', $row[2])#}</td>
                             </tr>
                             <tr>
                                 <th>题目数量</th>
-                                <td></td>
+                                <td>{#$row[4]#}</td>
                             </tr>
                             <tr>
                                 <th>正确率</th>
-                                <td></td>
+                                <td>{#$row[5] / $row[4] * 100#}%</td>
                             </tr>
                         </table>
 
                     </div>
                     <div class="am-panel-footer  am-text-center">
-                        <button class="am-btn am-btn-primary" type="button">查看详情</button>
+                        <button class="am-btn am-btn-primary" type="button" onclick="window.location.href='/learning_c/exam/result/{#$row[0]#}'">查看详情</button>
                     </div>
                 </div>
             </div>
-           {#/for#}
+            {#/if#}
+           {#/foreach#}
         </div>
 
     </div>
 </div>
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="doc-modal-1">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd"><h1>修改信息</h1>
+            <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+        </div>
+        <div class="am-modal-bd">
+            <form class="am-form am-form-horizontal">
+                <div class="am-form-group">
+                    <label class="am-form-label am-u-sm-3">姓名</label>
+                    <div class="am-u-sm-8">
+                        <input type="text" value="{#$stu_name#}" class="am-form-field" id="stu_name">
+                    </div>
+                </div>
+                <div class="am-form-group">
+                    <label class="am-form-label am-u-sm-3">学号</label>
+                    <div class="am-u-sm-8">
+                        <input type="text" value="{#$stu_number#}" class="am-form-field" id="stu_number">
+                    </div>
+                </div>
+                <div class="am-form-group">
+                    <label class="am-form-label am-u-sm-3">班级</label>
+                    <div class="am-u-sm-8">
+                        <input type="text" value="{#$class#}" class="am-form-field" id="class">
+                    </div>
+                </div>
+                <div class="am-form-group">
+                    <label class="am-form-label am-u-sm-3">年级</label>
+                    <div class="am-u-sm-8">
+                        <input type="text" value="{#$grade#}" class="am-form-field" id="grade">
+                    </div>
+                </div>
+                <div class="am-form-group">
+                    <label class="am-form-label am-u-sm-3">修改密码</label>
+                    <div class="am-u-sm-8">
+                        <input type="password" value="" class="am-form-field" id="pass1">
+                    </div>
+                </div>
+                <div class="am-form-group">
+                    <label class="am-form-label am-u-sm-3">确认密码</label>
+                    <div class="am-u-sm-8">
+                        <input type="password" value="" class="am-form-field" id="pass2">
+                    </div>
+                </div>
+                <hr/>
+                <button type="button" class="am-btn am-btn-success" id="submit">确认</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="am-modal am-modal-alert" tabindex="-1" id="alert">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">更新信息</div>
+        <div class="am-modal-bd" id="info">
+            确认提交吗？提交后不可修改
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn">确认</span>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#submit").click(function () {
+            var stu_name = $("#stu_name").val();
+            var stu_number = $("#stu_number").val();
+            var class_name = $("#class").val();
+            var grade = $("#grade").val();
+            var pass1 = $("#pass1").val();
+            var pass2 = $("#pass2").val();
+
+            if(stu_name.length == 0 || stu_number.length == 0 ||
+            class_name.length == 0 || grade.length == 0) {
+                $("#info").html("信息填写不完整!");
+                $("#alert").modal();
+            } else if(pass1.length != 0 && pass1 != pass2){
+                $("#info").html("两次填写的密码不一致!");
+                $("#alert").modal();
+            } else {
+                $.post("/learning_c/user/update",
+                    {
+                        stu_name:stu_name,
+                        stu_number:stu_number,
+                        class_name:class_name,
+                        grade:grade,
+                        pass1:pass1,
+                        pass2:pass2
+                    }, function (data) {
+                    var arg = eval("(" + data + ")");
+                    if(arg['status'] == true) {
+                        window.location.reload();
+                    } else {
+                        $("#info").html("更新失败，请重试");
+                        $("#alert").modal();
+                    }
+                })
+            }
+        })
+    })
+</script>
 {#include file='footer.html'#}

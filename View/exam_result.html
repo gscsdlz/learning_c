@@ -4,7 +4,15 @@
     <h2 class="am-titlebar-title ">
         {#$chapterName#} <br/>开始时间：{#date('Y-m-d H:i:s', $stime)#}<br/>结束时间：{#date('Y-m-d H:i:s', $etime)#}
         <br/>
-        题数：{#count($pro_info)#}
+        题数：{#count($pro_info)#}<br/>
+        正确率：
+        {#$ac = 0#}
+        {#foreach $pro_info as $row#}
+            {#if $row[2] == $row[4]#}
+            {#$ac = $ac+1#}
+        {#/if#}
+        {#/foreach#}
+        {#$ac#} / {#$ac / count($pro_info) * 100 #}%
     </h2>
 </div>
 <p>&nbsp;</p>
@@ -17,7 +25,8 @@
                 <div class="am-panel-hd">
                     {#$i+1#}、{#$row[3]#}
                     <img src="/learning_c/Storage/Image/{#if $row[2] == $row[4]#}ac.png{#else#}wa.png{#/if#}" width="20px" style="float: left">
-                    <span class="am-icon am-icon-cloud" style="float: right;cursor: pointer"></span>
+                    <span class="am-icon am-icon-cloud" data-am-popover="{content: '收藏本题', trigger: 'hover focus'}" style="float: right;cursor: pointer"></span>
+                    <input type="hidden" value="{#$row[0]#}">
                 </div>
                 <div class="am-panel-bd">
                     <div class="am-form-group afg">
@@ -35,9 +44,33 @@
         </form>
     </div>
 </div>
+<div class="am-modal am-modal-alert" tabindex="-1" id="alert">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">收藏提醒</div>
+        <div class="am-modal-bd" id="info">
+
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn">确认</span>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function(){
+        $(".am-icon-cloud").click(function(){
+            var id = $(this).next().val();
+            var target = $(this);
+            $.post("/learning_c/problem/collect", {pro_id:id}, function(data){
+                var arg = eval("(" + data + ")");
+                if(arg['status'] == true) {
+                    $("#info").html("本题已成功加入收藏夹")
 
+                } else {
+                    $("#info").html("收藏失败，请重试");
+                }
+                $("#alert").modal();
+            })
+        })
     })
 </script>
 {#include file='footer.html'#}

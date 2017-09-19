@@ -9,11 +9,15 @@ class IndexController extends Smarty
 
     public function login()
     {
-        parent::display('login.html');
+        if(isset($_SESSION['username'])) {
+            $this->index();
+        } else {
+            parent::display('login.html');
+        }
     }
 
     public function index()
     {
-        $this->login();
+        parent::display('index.html');
     }
 }

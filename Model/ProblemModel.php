@@ -71,4 +71,17 @@ class ProblemModel extends DB
             return parent::query_fetch_all("SELECT pro_id FROM problem INNER JOIN chapter ON chapter.sec_cha_id = problem.sec_cha_id WHERE section_id = ?",
                 [$sectionID]);
     }
+
+    /////////////////////////
+    ///
+    public function collect($pro_id, $user_id) {
+
+        return parent::query("INSERT INTO stu_collected (stu_id, pro_id) VALUES (?, ?)",
+            [$user_id, $pro_id]);
+    }
+
+    public function del_collect($pro_id, $user_id) {
+        return parent::query("DELETE FROM stu_collected WHERE stu_id = ? AND pro_id = ? LIMIT 1",
+            [$user_id, $pro_id]);
+    }
 }

@@ -13,7 +13,8 @@ class ChapterController extends Smarty
     {
         parent::__construct();
         if( !isset($_SESSION['privilege']) || $_SESSION['privilege'] == 0) {
-            parent::display('privilege_error.html');
+            parent::assign('error', '权限不足！');
+            parent::display('error.html');
             die;
         }
         $this->chapterModel = new ChapterModel();

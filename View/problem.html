@@ -2,9 +2,36 @@
 {#include file='navbar.html'#}
 <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
     <h2 class="am-titlebar-title ">
-        第一章-第二节-函数运用
+        {#$chapterName[1]#}-{#$chapterName[3]#}
+        <br/>
+        已用时间:<span id="times">00:00:00</span>
     </h2>
 </div>
+<script>
+
+    function refresh() {
+        var tmp = $("#times").html();
+        var arr = tmp.split(':');
+
+        var unixnow = parseInt(arr[0]) * 60 + parseInt(arr[1] * 60) + parseInt(arr[2]);
+
+        unixnow = unixnow + 1;
+
+        var h = parseInt(unixnow / 60);
+        unixnow -= h * 60;
+        var m = parseInt(unixnow / 60);
+        unixnow -= m * 60;
+        if(unixnow < 10)
+            unixnow = "0" + unixnow ;
+        if(m < 10)
+            m = "0" + m;
+        $("#times").html(h + ":" + m + ":"+unixnow);
+    }
+
+    $(document).ready(function () {
+       window.setInterval(refresh, 1000);
+    })
+</script>
 <p>&nbsp;</p>
 <div class="am-g">
     <div class="am-u-lg-6 am-u-lg-offset-3">
