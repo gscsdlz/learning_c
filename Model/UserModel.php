@@ -41,6 +41,19 @@ class UserModel extends DB
         }
     }
 
+    public function create_tea($username, $realname, $password)
+    {
+        $res = parent::query_one("SELECT COUNT(*) FROM tea_user WHERE tea_number = ?",
+            [$username]);
+        if($res[0] == 0) {
+            $id = parent::query("INSERT INTO tea_user (tea_number, tea_name, password) VALUES (?,?,?)",
+                [$username, $realname, sha1($password)]);
+            return $id;
+        } else {
+            return -1;
+        }
+    }
+
     public function get_stu_info($stu_name) {
         return parent::query_one("SELECT * FROM stu_user WHERE stu_id = ?",
             [$stu_name], PDO::FETCH_NAMED);
