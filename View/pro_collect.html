@@ -1,0 +1,63 @@
+{#include file='header.html'#}
+{#include file='navbar.html'#}
+<div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
+    <h2 class="am-titlebar-title ">
+        我的收藏夹
+    </h2>
+</div>
+<p>&nbsp;</p>
+<div class="am-g">
+    <div class="am-u-lg-6 am-u-lg-offset-3">
+        <form class="am-form">
+            {#foreach $pros as $row#}
+            <div class="am-panel am-panel-default">
+                <div class="am-panel-hd">
+                    {#$row[0]#}、{#$row[1][0]#}
+                    <span class="am-icon am-icon-trash" data-am-popover="{content: '取消收藏', trigger: 'hover focus'}" style="float: right;cursor: pointer"></span>
+                    <input type="hidden" value="{#$row[0]#}">
+                </div>
+                <div class="am-panel-bd">
+                    <div class="am-form-group afg">
+                        <input type="hidden" value="{#$row[0]#}">
+                        {#foreach $row[2] as $op#}
+                        <label  {#if $row[1][1] == $op[0]#}class="am-radio-inline am-text-success" style="font-size:20px"{#else#}class="am-radio-inline"{#/if#} >
+                        <input disabled type="radio" value="{#$op[0]#}" {#if $row[1][1] == $op[0]#}checked{#/if#} />
+                        {#$op[1]#}</label><br/>
+                        {#/foreach#}
+                    </div>
+                </div>
+            </div>
+            {#/foreach#}
+        </form>
+    </div>
+</div>
+<div class="am-modal am-modal-alert" tabindex="-1" id="alert">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">收藏提醒</div>
+        <div class="am-modal-bd" id="info">
+
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn">确认</span>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $(".am-icon-trash").click(function(){
+            var id = $(this).next().val();
+            var target = $(this);
+            $.post("/learning_c/problem/del_collect", {pro_id:id}, function(data){
+                var arg = eval("(" + data + ")");
+                if(arg['status'] == true) {
+                    $("#info").html("已成功取消收藏")
+
+                } else {
+                    $("#info").html("取消失败，请重试");
+                }
+                $("#alert").modal();
+            })
+        })
+    })
+</script>
+{#include file='footer.html'#}
