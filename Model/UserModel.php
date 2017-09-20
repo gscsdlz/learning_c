@@ -69,9 +69,23 @@ class UserModel extends DB
             [$stu_name, $stu_number, $class, $grade, $user_id]);
     }
     
-    public function get_all_user_by_class($classname) {
-        return parent::query_fetch_all("SELECT stu_id, stu_name, stu_number, grade, class FROM stu_user WHERE class = ? ORDER BY stu_number ASC",
-            [$classname]);
+    public function get_all_user_by_class($classname, $page) {
+        if(is_null($page))
+            return parent::query_fetch_all("SELECT stu_id, stu_name, stu_number, grade, class FROM stu_user WHERE class = ? ORDER BY stu_number ASC",
+                [$classname]);
+        else {
+            $l = ($page - 1) * 10;
+            $r = 10;
+            $res =  parent::query_fetch_all("SELECT stu_id, stu_name, stu_number, COUNT(DISTINCT log_id),COUNT(pro_id),COUNT(DISTINCT pro_id) FROM stu_user LEFT JOIN pro_log USING (stu_id) LEFT JOIN pro_result USING(log_id) WHERE class like ? GROUP BY stu_id LIMIT $l, $r",
+                [$classname]);
+            foreach ($res as &$row) {
+                $r = parent::query_one("SELECT COUNT(*) FROM pro_result LEFT JOIN problem USING(pro_id) LEFT JOIN pro_log USING(log_id) WHERE pro_result.option_id = problem.option_id AND stu_id = ?",
+                    [$row[0]]);
+                $row[] = $r[0];
+            }
+            unset($row);
+            return $res;
+        }
     }
 
     public function bind_class($classname, $tea_id) {
@@ -138,4 +152,23 @@ class UserModel extends DB
             array_values($res));
     }
 
+    ///////////////////////
+    public function get_tea_info($tid) {
+        $res1 = parent::query_one("SELECT tea_id, tea_name, tea_number, privilege, reg_time, last_time FROM tea_user WHERE tea_id = ?",
+            [$tid], PDO::FETCH_NAMED);
+        $res2 = parent::query_fetch_all("SELECT * FROM tea_stu_bind  WHERE tea_id = ?",
+            [$tid]);
+        return [$res1, $res2];
+    }
+
+    public function update_tea_pass($pass, $tid) {
+        return parent::query("UPDATE tea_user SET password = ? WHERE tea_id = ?",[
+            sha1($pass), $tid
+        ]);
+    }
+
+    public function update_tea_info($tid, $name, $number ){
+        return parent::query("UPDATE tea_user SET tea_name = ?, tea_number = ? WHERE tea_id = ? ",
+            [$name, $number, $tid]);
+    }
 }

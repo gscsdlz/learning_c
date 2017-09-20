@@ -33,7 +33,6 @@ class ChapterController extends Smarty
                 $sectionID = $section[0][0];
             $res = $this->chapterModel->get_chapter($sectionID);
 
-            var_dump($res);
             parent::assign('section', $section[0]);
             parent::assign('lists', $res);
         }

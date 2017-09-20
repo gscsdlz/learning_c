@@ -84,4 +84,16 @@ class ExamModel extends DB
             [$uid]);
         return [$num2[0], $num1[0]];
     }
+
+    public function get_info($uid) {
+        $res1 = parent::query_fetch_all("SELECT stu_id, pro_log.sec_cha_id, chapter_name, COUNT(DISTINCT log_id),COUNT(pro_id) FROM stu_user LEFT JOIN pro_log USING (stu_id) LEFT JOIN pro_result USING(log_id) LEFT JOIN chapter USING (sec_cha_id) WHERE stu_user.stu_id = ? GROUP BY pro_log.sec_cha_id ",
+            [$uid]);
+        foreach ($res1 as &$row) {
+            $res = parent::query_one("SELECT COUNT(*) FROM pro_result LEFT JOIN problem USING(pro_id) LEFT JOIN pro_log USING(log_id) WHERE pro_result.option_id = problem.option_id AND stu_id = ? AND pro_log.sec_cha_id = ?",
+                [$row[0], $row[1]]);
+            $row[] = $res[0];
+        }
+        unset($row);
+        return $res1;
+    }
 }

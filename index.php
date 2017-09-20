@@ -17,4 +17,3 @@ $controllerClass = $route->control;
 $action = $route->action;
 $control = WORK::create($controllerClass);
 $control->$action();
-

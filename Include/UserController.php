@@ -4,11 +4,13 @@ class UserController extends Smarty
 {
     private $userModel = null;
     private $examModel = null;
+    private $problemModel = null;
     public function __construct()
     {
         parent::__construct();
         $this->userModel = new UserModel();
         $this->examModel = new ExamModel();
+        $this->problemModel = new problemModel();
     }
 
     public function login() {
@@ -184,7 +186,8 @@ class UserController extends Smarty
 
     public function get_user() {
         $classname = post('classname');
-        $res = $this->userModel->get_all_user_by_class($classname);
+        $page = post('page');
+        $res = $this->userModel->get_all_user_by_class($classname, $page);
         echo json_encode($res);
     }
 
@@ -270,6 +273,46 @@ class UserController extends Smarty
 
     public function show_tea()
     {
+        $id = get('id');
+        $res = $this->userModel->get_tea_info($id);
+
+        parent::assign($res[0]);
+        parent::assign('classLists', $res[1]);
         parent::display('tea_user.html');
+    }
+
+    public function modify_tea()
+    {
+        $tid = $_SESSION['tea_id'];
+        $tea_name = post('tea_name');
+        $tea_number = post('tea_number');
+        $pass1 = post('pass1');
+        $pass2 = post('pass2');
+        if(strlen($pass1) != 0 && $pass1 == $pass2) {
+            $this->userModel->update_tea_pass($pass1, $tid);
+        }
+        $row = $this->userModel->update_tea_info($tid, $tea_name, $tea_number);
+        if($row > 0)
+            echo json_encode([
+                'status' => true
+            ]);
+        else
+            echo json_encode([
+                'status' => false
+            ]);
+
+    }
+    
+    public function get_exam_info() {
+        $uid = post('uid');
+        $res = $this->examModel->get_info($uid);
+        echo json_encode($res);
+    }
+
+    public function show_problems(){
+        //$id = $_SESSION['tea_id'];
+        $res = $this->problemModel->count_info();
+        parent::assign('pros', $res);
+        parent::display('tea_problem.html');
     }
 }

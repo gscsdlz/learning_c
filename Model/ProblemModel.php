@@ -84,4 +84,34 @@ class ProblemModel extends DB
         return parent::query("DELETE FROM stu_collected WHERE stu_id = ? AND pro_id = ? LIMIT 1",
             [$user_id, $pro_id]);
     }
+
+    public function count_info() {
+        $res = parent::query_fetch_all("SELECT pro_id, pro_info, option_id FROM problem");
+
+        foreach ($res as &$r) {
+            $res1 = parent::query_fetch_all("SELECT pro_option.option_id, option_info, COUNT(pro_result.option_id) FROM pro_option LEFT JOIN pro_result USING (option_id) WHERE pro_option.pro_id = ? GROUP BY pro_option.option_id",
+                [$r[0]]);
+            $r[] = $res1;
+        }
+        unset($r);
+        foreach ($res as &$r) {
+            $k = 0;
+            $arr = [];
+            foreach ($r[3] as $q) {
+                $k += $q[2];
+                $arr[] = $q;
+            }
+            if($k == 0)
+                $k = 1;
+
+            foreach ($arr as &$q) {
+                $q[2] = (int)($q[2] / $k * 100);
+            }
+            unset($q);
+            $r[3] = $arr;
+        }
+
+        unset($r);
+        return $res;
+    }
 }

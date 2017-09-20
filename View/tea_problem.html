@@ -1,0 +1,35 @@
+{#include file='header.html'#}
+{#include file='navbar.html'#}
+<div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
+    <h2 class="am-titlebar-title ">
+        题目正确率统计
+    </h2>
+</div>
+<p>&nbsp;</p>
+<div class="am-g">
+
+            {#foreach $pros as $row#}
+    <div class="am-u-lg-2">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">
+                        {#$row[0]#}、{#$row[1]#}
+                    </div>
+                    <div class="am-panel-bd">
+                        <div class="am-form-group afg">
+                            <input type="hidden" value="{#$row[0]#}">
+                            {#foreach $row[3] as $op#}
+                            <label  {#if $row[2] == $op[0]#}class="am-radio-inline am-text-success" style="font-size:20px"{#else#}class="am-radio-inline"{#/if#} >
+                            <input disabled type="radio" value="{#$op[0]#}" {#if $row[2] == $op[0]#}checked{#/if#} />
+                            {#$op[1]#}  </label>
+                            <div class="am-progress am-progress-striped am-progress-sm am-active ">
+                                <div class="am-progress-bar am-progress-bar-secondary"  style="width: {#$op[2]#}%"></div>
+                            </div>
+                            <br/>
+                            {#/foreach#}
+                        </div>
+                    </div>
+                </div>
+    </div>
+            {#/foreach#}
+</div>
+{#include file='footer.html'#}
