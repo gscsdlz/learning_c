@@ -71,6 +71,7 @@ class ResourceController extends Smarty
     public function edit() {
         $resid = get('id');
         $res = $this->resourceModel->get_resource($resid);
+
         parent::assign('sectionID', $res[2]);
         parent::assign('title', $res[1]);
         parent::assign('resID', $res[0]);
@@ -107,14 +108,11 @@ class ResourceController extends Smarty
             ]);
     }
 
-    public function get()
-    {
-
-    }
 
     public function learning()
     {
         $resid = get('id');
+
         parent::assign('body', $this->resourceModel->get_body($resid));
         parent::assign('lists', $this->resourceModel->get_all_resource());
         parent::display('learning.html');

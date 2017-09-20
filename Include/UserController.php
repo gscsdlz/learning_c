@@ -147,4 +147,129 @@ class UserController extends Smarty
             parent::display('login.html');
         }
     }
+
+    public function bind_user() {
+        $id = get('id',  1);
+        $tealists = $this->userModel->get_teacher();
+        $classList = $this->userModel->get_class($id);
+        parent::assign('tea_id', $id);
+        parent::assign('classLists', $classList);
+        parent::assign('tealists', $tealists);
+        parent::display('tea_stu_bind.html');
+    }
+
+    public function query_class()
+    {
+        $classname = post('classname');
+        $res = $this->userModel->get_all_user_by_class($classname);
+        echo json_encode(
+            ['res' => $res]
+        );
+    }
+
+    public function add_class() {
+        $classname = post('classname');
+        $tea_id =post('tea_id');
+        $row = $this->userModel->bind_class($classname, $tea_id);
+        if($row > 0) {
+            echo json_encode([
+                'status' => true
+            ]);
+        } else {
+            echo json_encode([
+                'status' => false
+            ]);
+        }
+    }
+
+    public function get_user() {
+        $classname = post('classname');
+        $res = $this->userModel->get_all_user_by_class($classname);
+        echo json_encode($res);
+    }
+
+    public function del_class() {
+        $classname = post('classname');
+        $row= $this->userModel->unbind_class($classname);
+        if($row > 0) {
+            echo json_encode([
+                'status' => true
+            ]);
+        } else {
+            echo json_encode([
+                'status' => false
+            ]);
+        }
+    }
+
+    public function tea_manager() {
+        $res = $this->userModel->get_tea();
+        parent::assign('teaLists', $res);
+        parent::display('teacher_manager.html');
+    }
+
+    public function update_teacher() {
+        $row = $this->userModel->update_tea($_POST);
+        if($row > 0) {
+            echo json_encode([
+                'status' => true
+            ]);
+        } else {
+            echo json_encode([
+                'status' => false
+            ]);
+        }
+    }
+
+    public function del_tea() {
+        $row = $this->userModel->del_tea($_POST);
+        if($row > 0) {
+            echo json_encode([
+                'status' => true
+            ]);
+        } else {
+            echo json_encode([
+                'status' => false
+            ]);
+        }
+    }
+
+    public function stu_manager() {
+        $page = (int)get('id', 1);
+        $res = $this->userModel->get_stu($page);
+        parent::assign('page', $page);
+        parent::assign('stuLists', $res);
+        parent::display('student_manager.html');
+    }
+
+    public function update_student() {
+        $row = $this->userModel->update_stu($_POST);
+        if($row > 0) {
+            echo json_encode([
+                'status' => true
+            ]);
+        } else {
+            echo json_encode([
+                'status' => false
+            ]);
+        }
+    }
+
+    public function del_stu() {
+        $row = $this->userModel->del_stu($_POST);
+        if($row > 0) {
+            echo json_encode([
+                'status' => true
+            ]);
+        } else {
+            echo json_encode([
+                'status' => false
+            ]);
+        }
+    }
+
+    public function show_tea()
+    {
+        parent::display('tea_user.html');
+    }
 }

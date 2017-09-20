@@ -1,0 +1,150 @@
+{#include file='header.html'#}
+{#include file='navbar.html'#}
+<div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
+    <h2 class="am-titlebar-title ">
+        学生管理-第{#$page#}页
+    </h2>
+</div>
+<div class="am-g">
+    <div class="am-u-lg-8 am-u-lg-offset-2">
+        <table class="am-table">
+            <tr>
+                <th>学生编号</th>
+                <th>学号</th>
+                <th>学生姓名</th>
+                <th>所属班级</th>
+                <th>任课教师</th>
+                <th>年级</th>
+                <th>操作</th>
+            </tr>
+            {#foreach $stuLists as $row#}
+            <tr>
+                <td>{#$row[0]#}</td>
+                <td>{#$row[1]#}</td>
+                <td>{#$row[2]#}</td>
+                <td>{#$row[3]#}</td>
+                <td>{#$row[4]#}</td>
+                <td>{#$row[5]#}</td>
+                <td>
+                    <span class="am-icon-edit" style="cursor: pointer" data-am-modal="{target: '#modal', closeViaDimmer: 0, width: 400, height: 400}"></span>
+                    <span class="am-icon-trash" style="cursor: pointer"></span>
+                </td>
+            </tr>
+            {#/foreach#}
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </table>
+        <ul data-am-widget="pagination" class="am-pagination am-pagination-select">
+
+            <li class="am-pagination-prev ">
+                <a href="/learning_c/user/stu_manager/{#$page - 1#}" class="">上一页</a>
+            </li>
+            <li class="am-pagination-next ">
+                <a href="/learning_c/user/stu_manager/{#$page + 1#}" class="">下一页</a>
+            </li>
+
+        </ul>
+    </div>
+</div>
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="modal">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd"><h1>修改信息</h1>
+            <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+        </div>
+        <div class="am-modal-bd">
+            <form class="am-form am-form-horizontal">
+                <div class="am-form-group">
+                    <label class="am-form-label am-u-sm-3">学生姓名</label>
+                    <div class="am-u-sm-8">
+                        <input type="text" value="" class="am-form-field" id="stu_name">
+                    </div>
+                </div>
+                <div class="am-form-group">
+                    <label class="am-form-label am-u-sm-3">学号</label>
+                    <div class="am-u-sm-8">
+                        <input type="text" value="" class="am-form-field" id="stu_number">
+                    </div>
+                </div><div class="am-form-group">
+                    <label class="am-form-label am-u-sm-3">班级</label>
+                    <div class="am-u-sm-8">
+                        <input type="text" value="" class="am-form-field" id="class_name">
+                    </div>
+                </div><div class="am-form-group">
+                    <label class="am-form-label am-u-sm-3">年级</label>
+                    <div class="am-u-sm-8">
+                        <input type="text" value="" class="am-form-field" id="grade">
+                    </div>
+                </div>
+
+                <hr/>
+                <button type="button" class="am-btn am-btn-success" id="submit">确认</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="am-modal am-modal-alert" tabindex="-1" id="alert">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">提示</div>
+        <div class="am-modal-bd" id="info">
+            确认提交吗？提交后不可修改
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn">确认</span>
+        </div>
+    </div>
+</div>
+<script>
+    var tea_id;
+    $(document).ready(function () {
+        $(".am-icon-edit").click(function () {
+            var table = $(this).parent().parent().children();
+            stu_id = $(table).eq(0).html();
+            var stu_number = $(table).eq(1).html();
+            var stu_name = $(table).eq(2).html();
+            var class_name = $(table).eq(3).html();
+            var grade  = $(table).eq(5).html();
+
+            $("#stu_name").val(stu_name);
+            $("#stu_number").val(stu_number);
+            $("#class_name").val(class_name);
+            $("#grade").val(grade);
+        })
+
+        $("#submit").click(function(){
+            var stu_name = $("#stu_name").val();
+            var stu_number = $("#stu_number").val();
+            var class_name = $("#class_name").val();
+            var grade = $("#grade").val();
+            $.post("/learning_c/user/update_student", {
+                stu_name:stu_name,
+                stu_number:stu_number,
+                class_name:class_name,
+                grade:grade,
+                stu_id:stu_id,
+            }, function(data){
+                var arg = eval("(" + data + ")");
+                if(arg['status'] == true){
+                    window.location.reload();
+                } else {
+                    $("#info").html("修改失败，请重试！");
+                    $("#alert").modal();
+                }
+            })
+        })
+
+        $(".am-icon-trash").click(function () {
+            var table = $(this).parent().parent().children();
+            stu_id = $(table).eq(0).html();
+
+            $.post("/learning_c/user/del_stu", {stu_id:stu_id}, function(data){
+                var arg = eval("(" + data + ")");
+                if(arg['status'] == true){
+                    window.location.reload();
+                } else {
+                    $("#info").html("修改失败，请重试！");
+                    $("#alert").modal();
+                }
+            })
+        })
+    })
+</script>
+{#include file='footer.html'#}

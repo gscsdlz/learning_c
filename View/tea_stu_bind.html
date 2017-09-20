@@ -1,0 +1,137 @@
+{#include file='header.html'#}
+{#include file='navbar.html'#}
+<div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
+    <h2 class="am-titlebar-title ">
+        教师-班级绑定
+    </h2>
+</div>
+<div class="am-g">
+    <div class="am-u-lg-2 am-u-lg-offset-2">
+        <ul class="am-list am-list-static am-list-border">
+            {#foreach $tealists as $row#}
+            <li><a href="/learning_c/user/bind_user/{#$row[0]#}">{#$row[1]#}</a></li>
+            {#/foreach#}
+        </ul>
+    </div>
+    <div class="am-u-lg-8 am-u-end">
+        <div class="am-tabs" data-am-tabs>
+            <ul class="am-tabs-nav am-nav am-nav-tabs">
+                <li><a href="#tab0">新增班级</a></li>
+                {#for $i = 1 to count($classLists)#}
+                <li><a href="#tab{#$i#}" onclick="get_stu({#$classLists[$i-1][0]#}, {#$i#})">{#$classLists[$i-1][0]#}</a></li>
+                {#/for#}
+
+            </ul>
+
+            <div class="am-tabs-bd">
+                <div class="am-tab-panel am-fade am-in" id="tab0">
+                    <form class="am-form am-form-horizontal">
+                        <div class="am-form-group">
+                            <label class="am-form-label am-u-sm-2">班级名</label>
+                            <div class="am-u-sm-8">
+                                <input type="text" id="classname" value="" class="am-form-field">
+                            </div>
+                        </div>
+                        <div class="am-form-group">
+                            <div class="am-u-sm-12 am-text-center">
+                                <button class="am-btn am-btn-primary" type="button" id="add">搜索</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="am-u-sm-12" id="lists">
+
+                    </div>
+                </div>
+                {#for $i = 1 to count($classLists)#}
+                <div class="am-tab-panel am-fade am-in am-active" id="tab{#$i#}">
+                    <table class="am-table">
+                        <tr>
+                            <th><span style="cursor: pointer" class="am-icon-trash"></span></th>
+                            <th><input type="hidden" value="{#$classLists[$i-1][0]#}"></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th>学号</th>
+                            <th>姓名</th>
+                            <th>年级</th>
+                            <th>班级</th>
+                        </tr>
+                    </table>
+                </div>
+               {#/for#}
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="am-modal am-modal-alert" tabindex="-1" id="alert">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">提示</div>
+        <div class="am-modal-bd" id="info">
+            确认提交吗？提交后不可修改
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn">确认</span>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#add").click(function(){
+            var classname = $("#classname").val();
+            if($(this).html() == '搜索') {
+
+                if (classname.length == 0) {
+                    $("#info").html("请填写班级！");
+                    $("#alert").modal();
+                } else {
+                    $.post("/learning_c/user/query_class", {classname: classname}, function (data) {
+                        var arg = eval("(" + data + ")");
+                        arg = arg['res'];
+                        for (var i = 0; i < arg.length; ++i) {
+                            $("#lists").append('<span style="margin:5px"  class="am-badge am-round am-badge-primary am-text-lg">' + arg[i][2] + '-' + arg[i][1] + '</span>&nbsp;')
+                        }
+                        $("#add").html("确认");
+                    })
+                }
+            } else {
+                if($(this).html() == '确认') {
+                    $.post("/learning_c/user/add_class", {classname:classname,tea_id:{#$tea_id#}}, function(data){
+                        var arg = eval("(" + data + ")");
+                        if(arg['status'] == true) {
+                            window.location.reload()
+                        } else {
+                            $("#info").html("绑定失败，当前班级已经被绑定！")
+                            $("#alert").modal();
+                        }
+                    })
+                }
+            }
+        })
+
+        $(".am-icon-trash").click(function(){
+            var classname = $(this).parent().next().children().eq(0).val();
+            $.post("/learning_c/user/del_class", {classname:classname}, function(data) {
+                var arg = eval("(" + data + ")");
+                if(arg['status'] == true) {
+                    window.location.reload()
+                } else {
+                    $("#info").html("解除绑定失败，请重试！")
+                    $("#alert").modal();
+                }
+            })
+        })
+    })
+
+    function get_stu(classname, id) {
+        $.post("/learning_c/user/get_user", {classname:classname}, function(data){
+            var arg = eval("(" + data +")");
+            var table = $("#tab" + id).children().eq(0);
+            for(var i = 0; i < arg.length; i++) {
+                $(table).append('<tr><td>'+arg[i][2]+'</td><td>'+arg[i][1]+'</td><td>'+arg[i][3]+'</td><td>'+arg[i][4]+'</td></tr>')
+            }
+        })
+    }
+</script>
+{#include file='footer.html'#}

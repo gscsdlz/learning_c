@@ -54,13 +54,13 @@ class ResourceModel extends DB
 
     public function get_all_resource()
     {
-        $res = parent::query("SELECT learning_resource.title, learning_resource.resource_id, section_name FROM chapter LEFT JOIN  learning_resource ON learning_resource.sec_cha_id = chapter.sec_cha_id LEFT JOIN section ON section.section_id = chapter.section_id WHERE 1");
+        $res = parent::query("SELECT learning_resource.title, learning_resource.resource_id, section_name 
+FROM chapter LEFT JOIN  learning_resource ON learning_resource.sec_cha_id = chapter.sec_cha_id 
+LEFT JOIN section ON section.section_id = chapter.section_id WHERE 1");
         $args = array();
+
         while ($row = $res->fetch(PDO::FETCH_NUM)) {
-            if(isset($args[$row[2]]))
-                $args[$row[2]][] = [$row[0], $row[1]];
-            else
-                $args[$row[2]][] = [$row[0], $row[1]];
+            $args[$row[2]][] = [$row[0], $row[1]];
         }
         return $args;
     }
