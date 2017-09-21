@@ -142,7 +142,7 @@
                     if(arg['status'] == true) {
                         $("#info").html("注册成功，3秒以后跳转");
                         $("#alert").modal();
-                        window.setTimeout('window.location.reload()', 3000);
+                        window.setTimeout('window.location.href="/"', 3000);
                     } else {
                         $("#info").html(arg['info']);
                         $("#alert").modal();
